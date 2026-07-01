@@ -1,0 +1,403 @@
+BlueEyeEntertainment_dev
+├── .agents
+│   ├── commands.md
+│   ├── context.md
+│   └── rules.md
+├── app
+│   ├── about
+│   │   └── page.tsx
+│   ├── admin
+│   │   ├── (dashboard)
+│   │   │   ├── artists
+│   │   │   │   ├── [id]
+│   │   │   │   │   ├── edit
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── new
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── blog
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── edit
+│   │   │   │   │       └── page.tsx
+│   │   │   │   ├── new
+│   │   │   │   │   ├── BlogForm.tsx
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── events
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── new
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── import
+│   │   │   │   └── page.tsx
+│   │   │   ├── inquiries
+│   │   │   │   └── page.tsx
+│   │   │   ├── missing-media
+│   │   │   │   └── page.tsx
+│   │   │   ├── settings
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   ├── login
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│   ├── api
+│   │   ├── admin
+│   │   │   ├── artists
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── route.ts
+│   │   │   │   ├── missing
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── route.ts
+│   │   │   ├── backup
+│   │   │   │   └── route.ts
+│   │   │   ├── blog
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── route.ts
+│   │   │   ├── dashboard
+│   │   │   │   └── route.ts
+│   │   │   ├── delete-otp
+│   │   │   │   └── route.ts
+│   │   │   ├── events
+│   │   │   │   ├── [id]
+│   │   │   │   │   ├── registrations
+│   │   │   │   │   │   ├── [rid]
+│   │   │   │   │   │   │   └── route.ts
+│   │   │   │   │   │   └── route.ts
+│   │   │   │   │   ├── updates
+│   │   │   │   │   │   ├── [uid]
+│   │   │   │   │   │   │   └── route.ts
+│   │   │   │   │   │   └── route.ts
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── route.ts
+│   │   │   ├── inquiries
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── route.ts
+│   │   │   ├── reviews
+│   │   │   │   └── route.ts
+│   │   │   ├── stats
+│   │   │   │   └── route.ts
+│   │   │   ├── upload
+│   │   │   │   └── route.ts
+│   │   │   ├── upload-from-url
+│   │   │   │   └── route.ts
+│   │   │   ├── upload-proxy
+│   │   │   │   └── route.ts
+│   │   │   └── validate-media-url
+│   │   │       └── route.ts
+│   │   ├── artists
+│   │   │   ├── [slug]
+│   │   │   │   └── route.ts
+│   │   │   ├── id
+│   │   │   │   └── [id]
+│   │   │   │       └── route.ts
+│   │   │   └── route.ts
+│   │   ├── auth
+│   │   │   ├── [...nextauth]
+│   │   │   │   └── route.ts
+│   │   │   ├── forgot-password
+│   │   │   │   └── route.ts
+│   │   │   ├── register
+│   │   │   │   └── route.ts
+│   │   │   ├── reset-password
+│   │   │   │   └── route.ts
+│   │   │   └── verify
+│   │   │       └── route.ts
+│   │   ├── contact
+│   │   │   └── route.ts
+│   │   ├── cooldown
+│   │   │   └── route.ts
+│   │   ├── events
+│   │   │   ├── [slug]
+│   │   │   │   ├── register
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── route.ts
+│   │   │   └── route.ts
+│   │   ├── filters
+│   │   │   └── route.ts
+│   │   ├── health
+│   │   │   └── db
+│   │   │       └── route.ts
+│   │   ├── home-data
+│   │   │   ├── artists
+│   │   │   │   └── route.ts
+│   │   │   ├── categories
+│   │   │   │   └── route.ts
+│   │   │   └── route.ts
+│   │   ├── inquiries
+│   │   │   ├── [id]
+│   │   │   │   └── route.ts
+│   │   │   └── route.ts
+│   │   ├── reviews
+│   │   │   ├── mine
+│   │   │   │   └── route.ts
+│   │   │   └── route.ts
+│   │   ├── search
+│   │   │   ├── suggest
+│   │   │   │   └── route.ts
+│   │   │   └── route.ts
+│   │   ├── stats
+│   │   │   └── route.ts
+│   │   └── users
+│   │       ├── favorites
+│   │       │   └── route.ts
+│   │       ├── inquiries
+│   │       │   └── route.ts
+│   │       └── profile
+│   │           └── route.ts
+│   ├── artists
+│   │   ├── [slug]
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── blog
+│   │   ├── [slug]
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── book-artist
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── categories
+│   │   └── page.tsx
+│   ├── category
+│   │   └── [category]
+│   │       └── page.tsx
+│   ├── city
+│   │   └── [city]
+│   │       └── page.tsx
+│   ├── contact
+│   │   └── page.tsx
+│   ├── events
+│   │   ├── [slug]
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── for-artists
+│   │   └── page.tsx
+│   ├── images-sitemap.xml
+│   │   └── route.ts
+│   ├── login
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── og
+│   │   └── route.tsx
+│   ├── privacy-policy
+│   │   └── page.tsx
+│   ├── profile
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── register
+│   │   └── page.tsx
+│   ├── reset-password
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── search
+│   │   └── page.tsx
+│   ├── switch-account
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── terms
+│   │   └── page.tsx
+│   ├── apple-icon.png
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── icon.png
+│   ├── layout.tsx
+│   ├── not-found.tsx
+│   ├── page.tsx
+│   ├── robots.ts
+│   └── sitemap.ts
+├── components
+│   ├── admin
+│   │   ├── AdminSidebar.tsx
+│   │   ├── ArtistForm.tsx
+│   │   ├── EventForm.tsx
+│   │   ├── EventUpdateForm.tsx
+│   │   └── RegistrationTable.tsx
+│   ├── analytics
+│   │   └── WebVitals.tsx
+│   ├── artists
+│   ├── auth
+│   │   ├── AuthProvider.tsx
+│   │   ├── ResetPasswordContent.tsx
+│   │   └── SwitchAccountPanel.tsx
+│   ├── blog
+│   ├── events
+│   │   ├── EventCard.tsx
+│   │   ├── EventHero.tsx
+│   │   ├── EventRegistrationForm.tsx
+│   │   ├── EventStatusBadge.tsx
+│   │   ├── EventTimeline.tsx
+│   │   └── EventTimelinePost.tsx
+│   ├── forms
+│   │   └── EmailForm.tsx
+│   ├── home
+│   │   ├── CategoryGrid.tsx
+│   │   ├── FeaturedArtists.tsx
+│   │   ├── HeroSection.tsx
+│   │   ├── HomeBackground.tsx
+│   │   ├── HomeDynamicContent.tsx
+│   │   ├── HomeLoadProgress.tsx
+│   │   ├── HomePageSkeleton.tsx
+│   │   ├── StatsBar.tsx
+│   │   └── TestimonialsMarquee.tsx
+│   ├── inquiries
+│   ├── layout
+│   │   ├── AppChrome.tsx
+│   │   ├── Footer.tsx
+│   │   └── Navbar.tsx
+│   ├── providers
+│   │   └── FavoritesProvider.tsx
+│   ├── react-bits
+│   │   ├── LightRays.css
+│   │   ├── LightRays.tsx
+│   │   ├── MagicBento.css
+│   │   ├── MagicBento.tsx
+│   │   ├── PlasmaWave.css
+│   │   └── PlasmaWave.tsx
+│   ├── search
+│   │   └── ArtistSearchInput.tsx
+│   └── ui
+│       ├── AdminEditArtistButton.tsx
+│       ├── AdminEditEventButton.tsx
+│       ├── ArtistCard.tsx
+│       ├── ArtistFilterBar.tsx
+│       ├── BulkDeleteOtpModal.tsx
+│       ├── button.tsx
+│       ├── ConfirmModal.tsx
+│       ├── CustomCursor.tsx
+│       ├── GlobalEyeBackground.tsx
+│       └── ScrollReveal.tsx
+├── docs
+│   ├── logs
+│   │   └── 2026-05.md
+│   ├── AI_CONTEXT.md
+│   ├── DEPLOYMENT.md
+│   ├── LATEST_CHANGES.md
+│   ├── LATEST_CHANGES_REPORT.md
+│   ├── NETLIFY_SETUP.md
+│   ├── ProjectDB.md
+│   ├── ProjectLog.md
+│   ├── ProjectPlan.md
+│   ├── ProjectSRS.md
+│   └── ProjectTree.md
+├── hooks
+├── lib
+│   ├── auth
+│   │   ├── authOptions.ts
+│   │   ├── cooldown.ts
+│   │   └── requireAdmin.ts
+│   ├── config
+│   │   ├── cache.ts
+│   │   └── site.ts
+│   ├── context
+│   │   └── LoadingContext.tsx
+│   ├── db
+│   │   ├── connect.ts
+│   │   └── redis.ts
+│   ├── models
+│   │   ├── Admin.ts
+│   │   ├── Artist.ts
+│   │   ├── BlogPost.ts
+│   │   ├── Event.ts
+│   │   ├── EventBackup.ts
+│   │   ├── EventRegistration.ts
+│   │   ├── EventUpdate.ts
+│   │   ├── Inquiry.ts
+│   │   ├── InquiryBackup.ts
+│   │   ├── Review.ts
+│   │   └── User.ts
+│   ├── seo
+│   │   ├── content.ts
+│   │   ├── jsonld.ts
+│   │   ├── metadata.ts
+│   │   ├── og.ts
+│   │   └── slugs.ts
+│   ├── services
+│   │   ├── artistService.ts
+│   │   ├── blogService.ts
+│   │   ├── eventRegistrationService.ts
+│   │   ├── eventService.ts
+│   │   ├── homeDataService.ts
+│   │   ├── imageKitService.ts
+│   │   ├── importService.ts
+│   │   ├── searchService.ts
+│   │   └── userService.ts
+│   ├── utils
+│   │   ├── apiResponse.ts
+│   │   ├── email.ts
+│   │   ├── formatters.ts
+│   │   ├── slugify.ts
+│   │   ├── validators.ts
+│   │   └── whatsapp.ts
+│   └── utils.ts
+├── public
+│   ├── android-chrome-192x192.png
+│   ├── android-chrome-512x512.png
+│   ├── apple-touch-icon.png
+│   ├── BingSiteAuth.xml
+│   ├── eye.png
+│   ├── eye.webp
+│   ├── eye2.png
+│   ├── eye2.webp
+│   ├── favicon-16x16.png
+│   ├── favicon-32x32.png
+│   ├── favicon-48x48.png
+│   ├── favicon-96x96.png
+│   ├── favicon.ico
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── google77db56515cdc1333.html
+│   ├── icon-96.webp
+│   ├── icon.png
+│   ├── next.svg
+│   ├── site.webmanifest
+│   ├── vercel.svg
+│   └── window.svg
+├── scratch
+├── scripts
+│   ├── optimize-favicons.mjs
+│   ├── optimize-images.mjs
+│   └── seed-blog.mjs
+├── styles
+│   ├── components
+│   │   ├── admin.css
+│   │   ├── animations.css
+│   │   ├── artistPage.css
+│   │   ├── base.css
+│   │   ├── home.css
+│   │   ├── layout.css
+│   │   ├── missing-media.css
+│   │   ├── pages.css
+│   │   ├── search.css
+│   │   └── ui.css
+│   └── globals.css
+├── types
+│   └── next-auth.d.ts
+├── .env.example
+├── .env.local
+├── .env.production
+├── .gitignore
+├── .npmrc
+├── .prettierrc
+├── AGENTS.md
+├── components.json
+├── DESIGN.md
+├── eslint.config.mjs
+├── netlify.toml
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── proxy.ts
+├── README.md
+├── SKILL.md
+├── tailwind.config.ts
+├── tree.py
+├── tsconfig.json
+├── tsconfig.tsbuildinfo
+└── vercel.json
