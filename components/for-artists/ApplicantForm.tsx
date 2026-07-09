@@ -64,18 +64,34 @@ export default function ApplicantForm({ isOpen, onClose }: ApplicantFormProps) {
     if (!file) return;
     setUploading(true);
     try {
-      const data = new FormData();
-      data.append("file", file);
-      data.append("folder", `/applicants/${form.name.replace(/\s+/g, "_") || "unknown"}`);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: data });
-      const result = await res.json();
-      if (result.success) {
-        setForm(prev => ({ ...prev, images: [...prev.images, result.filePath] }));
+      const authRes = await fetch("/api/upload-auth");
+      const authData = await authRes.json();
+      if (!authData.success) throw new Error(authData.error || "Failed to get upload credentials");
+
+      const { signature, token, expire, publicKey } = authData.data;
+      const folder = `/applicants/${form.name.replace(/\s+/g, "_") || "unknown"}`;
+
+      const body = new FormData();
+      body.append("file", file);
+      body.append("publicKey", publicKey);
+      body.append("signature", signature);
+      body.append("token", token);
+      body.append("expire", String(expire));
+      body.append("useUniqueFileName", "true");
+      body.append("folder", folder);
+
+      const uploadRes = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
+        method: "POST",
+        body,
+      });
+      const uploadResult = await uploadRes.json();
+      if (uploadResult.filePath) {
+        setForm(prev => ({ ...prev, images: [...prev.images, uploadResult.filePath] }));
       } else {
-        setErrorMsg(result.error || "Upload failed");
+        setErrorMsg(uploadResult.message || uploadResult.error || "Upload failed");
       }
-    } catch {
-      setErrorMsg("Image upload failed. Please try again.");
+    } catch (err: any) {
+      setErrorMsg(err.message || "Image upload failed. Please try again.");
     } finally {
       setUploading(false);
     }
