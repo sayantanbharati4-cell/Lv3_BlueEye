@@ -1,17 +1,29 @@
 import { NextResponse } from "next/server";
-import ImageKit from "@imagekit/nodejs";
-
-const imagekit = new ImageKit({
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
-});
+import crypto from "crypto";
 
 export async function GET() {
   try {
-    const authParams = imagekit.helper.getAuthenticationParameters();
+    const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
+    if (!privateKey) {
+      return NextResponse.json(
+        { success: false, error: "ImageKit private key not configured" },
+        { status: 500 }
+      );
+    }
+
+    const token = crypto.randomUUID();
+    const expire = Math.floor(Date.now() / 1000) + 1800;
+    const signature = crypto
+      .createHmac("sha1", privateKey)
+      .update(token + expire)
+      .digest("hex");
+
     return NextResponse.json({
       success: true,
       data: {
-        ...authParams,
+        token,
+        expire,
+        signature,
         publicKey: process.env.IMAGEKIT_PUBLIC_KEY || "",
         urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || "",
       },

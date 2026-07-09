@@ -73,6 +73,7 @@ export default function ApplicantForm({ isOpen, onClose }: ApplicantFormProps) {
 
       const body = new FormData();
       body.append("file", file);
+      body.append("fileName", file.name);
       body.append("publicKey", publicKey);
       body.append("signature", signature);
       body.append("token", token);
