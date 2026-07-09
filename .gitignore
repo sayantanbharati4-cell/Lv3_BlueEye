@@ -12,7 +12,7 @@
 
 # testing
 /coverage
-
+/_aws_namespaces/
 # next.js
 /.next/
 /out/

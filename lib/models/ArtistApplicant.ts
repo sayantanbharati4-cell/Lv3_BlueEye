@@ -30,6 +30,7 @@ const artistApplicantSchema = new mongoose.Schema({
   about: mongoose.Schema.Types.Mixed,
   faq: [faqSchema],
   media: { type: mediaSchema, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
   applicantEmail: { type: String, required: true, trim: true, lowercase: true },
   applicantPhone: { type: String, required: true, trim: true },
   status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },

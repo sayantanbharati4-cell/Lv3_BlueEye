@@ -1,13 +1,34 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 interface ApplicantFormProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
+  initialData?: {
+    _id: string;
+    name: string;
+    category: string;
+    applicantEmail: string;
+    applicantPhone: string;
+    city: string;
+    state: string;
+    about: string;
+    genres: string[];
+    languages: string[];
+    durationMin: number;
+    durationMax: number;
+    teamMin: number;
+    teamMax: number;
+    images: string[];
+    videos: string[];
+  };
 }
 
-export default function ApplicantForm({ isOpen, onClose }: ApplicantFormProps) {
+export default function ApplicantForm({ isOpen, onClose, onSuccess, initialData }: ApplicantFormProps) {
+  const { data: session } = useSession();
   const [categories, setCategories] = useState<string[]>([]);
   const [step, setStep] = useState<"form" | "success" | "error">("form");
   const [uploading, setUploading] = useState(false);
@@ -40,19 +61,40 @@ export default function ApplicantForm({ isOpen, onClose }: ApplicantFormProps) {
     if (!isOpen) return;
     setStep("form");
     setErrorMsg("");
-    setForm({
-      name: "", category: "", applicantEmail: "", applicantPhone: "",
-      city: "", state: "India", about: "",
-      genres: [], languages: [],
-      durationMin: 30, durationMax: 90, teamMin: 1, teamMax: 1,
-      images: [], videos: [],
-    });
+    if (initialData) {
+      setForm({
+        name: initialData.name,
+        category: initialData.category,
+        applicantEmail: initialData.applicantEmail,
+        applicantPhone: initialData.applicantPhone,
+        city: initialData.city || "",
+        state: initialData.state || "India",
+        about: initialData.about || "",
+        genres: initialData.genres || [],
+        languages: initialData.languages || [],
+        durationMin: initialData.durationMin ?? 30,
+        durationMax: initialData.durationMax ?? 90,
+        teamMin: initialData.teamMin ?? 1,
+        teamMax: initialData.teamMax ?? 1,
+        images: initialData.images || [],
+        videos: initialData.videos || [],
+      });
+    } else {
+      const sessionEmail = (session?.user as any)?.email || "";
+      setForm({
+        name: "", category: "", applicantEmail: sessionEmail, applicantPhone: "",
+        city: "", state: "India", about: "",
+        genres: [], languages: [],
+        durationMin: 30, durationMax: 90, teamMin: 1, teamMax: 1,
+        images: [], videos: [],
+      });
+    }
     setNewGenre(""); setNewLang(""); setNewVideo("");
     fetch("/api/filters")
       .then(r => r.json())
       .then(d => { if (d.success) setCategories(d.data.categories); })
       .catch(() => {});
-  }, [isOpen]);
+  }, [isOpen, initialData]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "unset";
@@ -124,8 +166,14 @@ export default function ApplicantForm({ isOpen, onClose }: ApplicantFormProps) {
         media: { images: form.images, videos: form.videos },
       };
 
-      const res = await fetch("/api/artist-applications", {
-        method: "POST",
+      const isEdit = !!initialData;
+      const url = isEdit
+        ? `/api/users/applications/${initialData!._id}`
+        : "/api/artist-applications";
+      const method = isEdit ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -133,6 +181,7 @@ export default function ApplicantForm({ isOpen, onClose }: ApplicantFormProps) {
       const result = await res.json();
       if (result.success) {
         setStep("success");
+        onSuccess?.();
       } else {
         setErrorMsg(result.message || result.error || "Failed to submit application.");
         setStep("error");
@@ -182,7 +231,7 @@ export default function ApplicantForm({ isOpen, onClose }: ApplicantFormProps) {
           <form onSubmit={handleSubmit} style={{ padding: "2rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
               <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--text)" }}>
-                Submit Your Artist Profile
+                {initialData ? "Edit Your Application" : "Submit Your Artist Profile"}
               </h2>
               <button type="button" onClick={onClose} style={{ background: "none", border: "none", color: "var(--text3)", cursor: "pointer", padding: 4 }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -333,7 +382,7 @@ export default function ApplicantForm({ isOpen, onClose }: ApplicantFormProps) {
             <div style={{ marginTop: "2rem", display: "flex", gap: "1rem", justifyContent: "flex-end" }}>
               <button type="button" onClick={onClose} className="btn-outline px-8 py-4 rounded-2xl">Cancel</button>
               <button type="submit" disabled={submitting} className="btn-primary px-10 py-4 rounded-2xl text-base font-black shadow-gold/20">
-                {submitting ? "Submitting..." : "Submit Application"}
+                {submitting ? "Saving..." : initialData ? "Update Application" : "Submit Application"}
               </button>
             </div>
           </form>

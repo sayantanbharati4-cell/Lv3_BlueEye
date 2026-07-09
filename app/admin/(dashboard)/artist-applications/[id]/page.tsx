@@ -129,7 +129,7 @@ export default function ApplicantDetailPage() {
             </span>
           </div>
           <p className="admin-subtitle" style={{ marginLeft: "3rem" }}>
-            Applied {new Date(a.createdAt).toLocaleDateString()} | {a.applicantEmail} | {a.applicantPhone}
+            Submitted {new Date(a.createdAt).toLocaleDateString()} | Last updated {new Date(a.updatedAt).toLocaleDateString()} | {a.applicantEmail} | {a.applicantPhone}
           </p>
         </div>
 

@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/authOptions";
 import { connectToDatabase } from "@/lib/db/connect";
 import ArtistApplicant from "@/lib/models/ArtistApplicant";
 import { artistApplicantSchemaValidation } from "@/lib/utils/validators";
@@ -6,6 +8,9 @@ import { apiSuccess, apiError } from "@/lib/utils/apiResponse";
 
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as any)?.id;
+
     const body = await request.json();
 
     const result = artistApplicantSchemaValidation.safeParse(body);
@@ -15,12 +20,12 @@ export async function POST(request: Request) {
 
     await connectToDatabase();
 
-    const existing = await ArtistApplicant.findOne({
-      applicantEmail: result.data.applicantEmail.toLowerCase(),
-      status: "pending",
-    });
+    const applicantData: Record<string, unknown> = { ...result.data };
+    if (userId) {
+      applicantData.userId = userId;
+    }
 
-    const applicant = await ArtistApplicant.create(result.data);
+    const applicant = await ArtistApplicant.create(applicantData);
 
     return apiSuccess(
       { id: applicant._id },

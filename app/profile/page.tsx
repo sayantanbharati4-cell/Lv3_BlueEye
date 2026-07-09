@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ArtistCard from "@/components/ui/ArtistCard";
+import ApplicantForm from "@/components/for-artists/ApplicantForm";
 import Link from "next/link";
 
 export default function ProfilePage() {
@@ -22,6 +23,14 @@ export default function ProfilePage() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState("");
+
+  // Application states
+  const [applications, setApplications] = useState<any[]>([]);
+  const [appsLoading, setAppsLoading] = useState(true);
+  const [appsError, setAppsError] = useState("");
+  const [editingApp, setEditingApp] = useState<any>(null);
+  const [showAppForm, setShowAppForm] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Review states
   const [myReview, setMyReview] = useState<any>(null);
@@ -82,6 +91,19 @@ export default function ProfilePage() {
             setInquiries(data.data);
           }
         });
+
+      // 5. Fetch user's applications
+      fetch("/api/users/applications")
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setApplications(data.data);
+          } else {
+            setAppsError(data.message || "Failed to load applications");
+          }
+        })
+        .catch(() => setAppsError("Network error loading applications"))
+        .finally(() => setAppsLoading(false));
     }
   }, [status]);
 
@@ -184,6 +206,57 @@ export default function ProfilePage() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleDeleteApplication = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this application? This action cannot be undone.")) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/users/applications/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        setApplications(prev => prev.filter(a => a._id !== id));
+      } else {
+        alert(data.message || "Failed to delete application.");
+      }
+    } catch {
+      alert("An error occurred while deleting.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleEditApplication = (app: any) => {
+    setEditingApp({
+      _id: app._id,
+      name: app.name,
+      category: app.category,
+      applicantEmail: app.applicantEmail,
+      applicantPhone: app.applicantPhone,
+      city: app.location?.city || "",
+      state: app.location?.state || "India",
+      about: app.about || "",
+      genres: app.performance?.genres || [],
+      languages: app.performance?.languages || [],
+      durationMin: app.performance?.duration_minutes?.min ?? 30,
+      durationMax: app.performance?.duration_minutes?.max ?? 90,
+      teamMin: app.performance?.team_members?.min ?? 1,
+      teamMax: app.performance?.team_members?.max ?? 1,
+      images: app.media?.images || [],
+      videos: app.media?.videos || [],
+    });
+    setShowAppForm(true);
+  };
+
+  const handleAppFormClose = () => {
+    setShowAppForm(false);
+    setEditingApp(null);
+  };
+
+  const handleAppFormSuccess = () => {
+    fetch("/api/users/applications")
+      .then(res => res.json())
+      .then(data => { if (data.success) setApplications(data.data); });
   };
 
   if (status === "loading" || loading) {
@@ -433,6 +506,78 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
+
+      <div className="section-header" style={{ marginTop: '1rem' }}>
+        <h2 className="section-title">Your <span>Applications</span></h2>
+        <p className="section-desc">Artist applications you have submitted for review.</p>
+      </div>
+
+      {appsLoading ? (
+        <div style={{ textAlign: 'center', padding: '4rem 2rem', marginBottom: '4rem' }}>
+          <p style={{ color: 'var(--text3)' }}>Loading your applications...</p>
+        </div>
+      ) : appsError ? (
+        <div style={{ textAlign: 'center', padding: '4rem 2rem', background: 'rgba(255,107,107,0.1)', borderRadius: '20px', border: '1px solid rgba(255,107,107,0.2)', marginBottom: '4rem' }}>
+          <p style={{ color: '#ff6b6b', marginBottom: '0.5rem' }}>Failed to load applications.</p>
+          <p style={{ color: 'var(--text3)', fontSize: '0.85rem' }}>{appsError}</p>
+        </div>
+      ) : applications.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '4rem 2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: '1px dashed var(--border)', marginBottom: '4rem' }}>
+          <p style={{ color: 'var(--text3)', marginBottom: '1.5rem' }}>You haven't submitted any artist applications yet.</p>
+          <Link href="/for-artists" style={{ color: 'var(--gold)', textDecoration: 'underline' }}>Apply as an Artist</Link>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gap: '1rem', marginBottom: '4rem' }}>
+          {applications.map((app) => {
+            const statusColor = app.status === 'approved' ? 'rgba(76,201,240,0.1)' : app.status === 'rejected' ? 'rgba(255,107,107,0.1)' : 'rgba(212,160,23,0.1)';
+            const statusTextColor = app.status === 'approved' ? '#4cc9f0' : app.status === 'rejected' ? '#ff6b6b' : 'var(--gold)';
+            return (
+              <div key={app._id} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff' }}>{app.name}</h4>
+                    <span style={{ padding: '0.3rem 0.65rem', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', background: statusColor, color: statusTextColor }}>
+                      {app.status}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text3)', marginTop: '0.25rem' }}>
+                    {app.category} • Submitted {new Date(app.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  {app.status !== 'approved' && (
+                    <>
+                      <button
+                        onClick={() => handleEditApplication(app)}
+                        className="btn-outline"
+                        style={{ padding: '0.45rem 0.85rem', borderRadius: '10px', fontSize: '0.8rem' }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteApplication(app._id)}
+                        disabled={deletingId === app._id}
+                        className="btn-outline"
+                        style={{ padding: '0.45rem 0.85rem', borderRadius: '10px', fontSize: '0.8rem', color: '#ff6b6b', borderColor: 'rgba(255,107,107,0.2)' }}
+                      >
+                        {deletingId === app._id ? 'Deleting...' : 'Delete'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <ApplicantForm
+        isOpen={showAppForm}
+        onClose={handleAppFormClose}
+        onSuccess={handleAppFormSuccess}
+        initialData={editingApp || undefined}
+      />
+
       <div className="section-header" style={{ marginTop: '1rem' }}>
         <h2 className="section-title">Your <span>Inquiries</span></h2>
         <p className="section-desc">Booking requests you have submitted to our team.</p>
