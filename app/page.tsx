@@ -252,6 +252,67 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* Artist CTA — Apply as an Artist */}
+      <section style={{ padding: '5rem 0' }}>
+        <div className="section-inner">
+          <div style={{
+            background: 'transparent',
+            border: '1px solid var(--border)',
+            borderRadius: '32px',
+            padding: 'clamp(2rem, 4vw, 4rem)',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: '2.5rem',
+            alignItems: 'center',
+          }}>
+            <div>
+              <div className="section-label">For Artists</div>
+              <h2 className="section-title" style={{ marginTop: '1rem' }}>
+                Join India's Premium <span>Artist Network</span>
+              </h2>
+              <p style={{ color: 'var(--text2)', lineHeight: 1.7, marginTop: '1rem', maxWidth: '480px' }}>
+                Get discovered by top event organisers across the country. Create your profile, showcase your work, and receive direct booking inquiries — all with zero listing fees.
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginTop: '2rem' }}>
+                <a href="/for-artists" className="btn-primary btn-lg">
+                  Apply as an Artist →
+                </a>
+                <a href="/for-artists" className="btn-outline btn-lg">
+                  Learn More
+                </a>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {[
+                { icon: (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                ), title: 'Zero Listing Fees', desc: 'Create and manage your profile completely free. No upfront costs, no hidden charges.' },
+                { icon: (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                ), title: 'Direct Client Inquiries', desc: 'Get booking requests straight from event organisers with full event details and budget.' },
+                { icon: (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                ), title: 'Pan-India Reach', desc: 'Get discovered by organisers from Mumbai to Dubai. Expand your network across borders.' },
+              ].map((item, i) => (
+                <div key={i} style={{ display: 'flex', gap: '0.85rem', alignItems: 'flex-start' }}>
+                  <div style={{
+                    width: 38, height: 38, borderRadius: 10, flexShrink: 0,
+                    background: 'rgba(0, 210, 255, 0.08)', border: '1px solid rgba(0, 210, 255, 0.12)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)',
+                  }}>
+                    {item.icon}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text)', marginBottom: '0.15rem' }}>{item.title}</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--text3)', lineHeight: 1.5 }}>{item.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Banner */}
       <section id="cta-banner" style={{ position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, zIndex: 0 ,opacity:0.5}}>
