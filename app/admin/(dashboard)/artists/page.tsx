@@ -29,11 +29,13 @@ export default function AdminArtistsPage() {
     isOpen: boolean;
     title: string;
     message: string;
+    confirmText?: string;
     onConfirm: () => void;
   }>({
     isOpen: false,
     title: "",
     message: "",
+    confirmText: "Confirm",
     onConfirm: () => {},
   });
   const [otpModal, setOtpModal] = useState(false);
@@ -146,24 +148,18 @@ export default function AdminArtistsPage() {
     setModal({
       isOpen: true,
       title: "Delete Artist",
-      message: "Are you sure you want to delete this artist? This action cannot be undone.",
-      onConfirm: () => {
-        setModal({
-          isOpen: true,
-          title: "⚠️ Final Confirmation",
-          message: "This is your FINAL warning. The artist will be permanently removed from the database. Proceed?",
-          onConfirm: async () => {
-            try {
-              const res = await fetch(`/api/artists/id/${id}`, { method: 'DELETE' });
-              const data = await res.json();
-              if (data.success) {
-                setArtists(prev => prev.filter(a => a._id !== id));
-              }
-            } catch {
-              console.error("Failed to delete artist");
-            }
+      message: "Are you sure you want to permanently delete this artist? This action cannot be undone.",
+      confirmText: "Yes, Delete Permanently",
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`/api/artists/id/${id}`, { method: 'DELETE' });
+          const data = await res.json();
+          if (data.success) {
+            setArtists(prev => prev.filter(a => a._id !== id));
           }
-        });
+        } catch {
+          console.error("Failed to delete artist");
+        }
       }
     });
   };
@@ -457,6 +453,7 @@ export default function AdminArtistsPage() {
         isOpen={modal.isOpen}
         title={modal.title}
         message={modal.message}
+        confirmText={modal.confirmText || "Confirm"}
         onConfirm={modal.onConfirm}
         onCancel={() => setModal(prev => ({ ...prev, isOpen: false }))}
         variant="danger"

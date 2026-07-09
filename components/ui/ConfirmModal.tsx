@@ -71,8 +71,8 @@ export default function ConfirmModal({
             </button>
           )}
           <button 
-            onClick={() => {
-              onConfirm();
+            onClick={async () => {
+              await onConfirm();
               onCancel();
             }} 
             className={`btn-modal-confirm ${variant}`}

@@ -124,3 +124,22 @@ export async function PATCH(
     return apiError(error.message || "Failed to process applicant", 500);
   }
 }
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) return apiError("Unauthorized", 401);
+
+    await connectToDatabase();
+    const applicant = await ArtistApplicant.findByIdAndDelete(id);
+    if (!applicant) return apiError("Applicant not found", 404);
+
+    return apiSuccess(null, "Applicant permanently deleted.");
+  } catch (error: any) {
+    return apiError(error.message || "Failed to delete applicant", 500);
+  }
+}

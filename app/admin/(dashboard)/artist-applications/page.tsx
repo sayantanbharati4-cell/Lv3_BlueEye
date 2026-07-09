@@ -58,72 +58,69 @@ export default function AdminArtistApplicantsPage() {
         </div>
       </div>
 
-      <div className="admin-table-container" style={{ marginTop: "1rem" }}>
-        <div className="flex gap-3 my-6 flex-wrap" style={{ alignItems: "center" }}>
-          <select
-            value={status}
-            onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-            style={{
-              flex: "0 0 auto", minWidth: "160px", width: "auto",
-              padding: "0.6rem 0.8rem", borderRadius: "12px",
-              background: "var(--bg)", border: "1px solid var(--border)",
-              color: "var(--text)", fontSize: "0.85rem",
-            }}
-          >
-            <option value="">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
-        </div>
+      <div style={{ marginBottom: "1.5rem" }}>
+        <select
+          value={status}
+          onChange={(e) => { setStatus(e.target.value); setPage(1); }}
+          style={{
+            flex: "0 0 auto", minWidth: "160px", width: "auto",
+            padding: "0.6rem 0.8rem", borderRadius: "12px",
+            background: "var(--bg)", border: "1px solid var(--border)",
+            color: "var(--text)", fontSize: "0.85rem",
+          }}
+        >
+          <option value="">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
 
-        <div className="overflow-x-auto">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Applicant</th>
-                <th>Category</th>
-                <th>Contact</th>
-                <th>Status</th>
-                <th>Applied</th>
-                <th className="text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr><td colSpan={6} className="text-center py-16">Loading applicants...</td></tr>
-              ) : applicants.length === 0 ? (
-                <tr><td colSpan={6} className="text-center py-16">No applicants found.</td></tr>
-              ) : applicants.map((a) => (
-                <tr key={a._id}>
-                  <td>
-                    <div className="flex items-center gap-4">
-                      <div className="admin-artist-thumb">
-                        <img
-                          src={a.media?.images?.[0]
-                            ? (a.media.images[0].startsWith("http") ? a.media.images[0] : `${process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${a.media.images[0]}`)
-                            : "https://placehold.co/100x100/1a1a1a/d4a017?text=Artist"}
-                          alt={a.name}
-                        />
-                      </div>
-                      <div>
-                        <div className="font-bold text-lg">{a.name}</div>
-                        <div className="text-xs text-text3">{a.applicantEmail}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <span className="admin-badge">{a.category}</span>
-                  </td>
-                  <td>
-                    <div className="text-sm">{a.applicantPhone}</div>
-                    <div className="text-xs text-text3">{a.location?.city || "N/A"}</div>
-                  </td>
-                  <td>
+      {loading ? (
+        <div style={{ textAlign: "center", padding: "4rem 2rem", color: "var(--text3)" }}>Loading applicants...</div>
+      ) : applicants.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "4rem 2rem", color: "var(--text3)" }}>No applicants found.</div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          {applicants.map((a) => (
+            <Link
+              key={a._id}
+              href={`/admin/artist-applications/${a._id}`}
+              style={{ textDecoration: "none", display: "block" }}
+            >
+              <div
+                style={{
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "16px",
+                  padding: "1.25rem 1.5rem",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  gap: "1.25rem",
+                  transition: "background 0.15s",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "rgba(255,255,255,0.04)"}
+                onMouseLeave={(e) => e.currentTarget.style.background = "var(--surface)"}
+              >
+                <div style={{ width: 56, height: 56, borderRadius: 12, overflow: "hidden", flexShrink: 0, background: "var(--bg)", border: "1px solid var(--border)" }}>
+                  <img
+                    src={a.media?.images?.[0]
+                      ? (a.media.images[0].startsWith("http") ? a.media.images[0] : `${process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT}/${a.media.images[0]}`)
+                      : "https://placehold.co/100x100/1a1a1a/d4a017?text=Artist"}
+                    alt={a.name}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                </div>
+
+                <div style={{ flex: "1 1 200px", minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap" }}>
+                    <span style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text)" }}>{a.name}</span>
                     <span
                       style={{
-                        display: "inline-block", padding: "0.2rem 0.75rem", borderRadius: 20,
-                        fontSize: "0.78rem", fontWeight: 600,
+                        display: "inline-block", padding: "0.2rem 0.65rem", borderRadius: 20,
+                        fontSize: "0.72rem", fontWeight: 600,
                         background: statusColors[a.status] || "var(--bg3)",
                         color: statusTextColors[a.status] || "var(--text2)",
                         border: `1px solid ${(statusColors[a.status] || "var(--border)").replace("0.15", "0.3")}`,
@@ -131,37 +128,53 @@ export default function AdminArtistApplicantsPage() {
                     >
                       {a.status.charAt(0).toUpperCase() + a.status.slice(1)}
                     </span>
-                  </td>
-                  <td>
-                    <div className="text-sm text-text3">
-                      {new Date(a.createdAt).toLocaleDateString()}
-                    </div>
-                  </td>
-                  <td className="text-right">
-                    <Link href={`/admin/artist-applications/${a._id}`} className="admin-action-btn" title="View Details">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                  <div style={{ fontSize: "0.82rem", color: "var(--text3)", marginTop: "0.2rem" }}>
+                    {a.applicantEmail}
+                  </div>
+                </div>
 
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2" style={{ marginTop: "1.5rem" }}>
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-              className="btn-outline" style={{ padding: "0.35rem 0.6rem", fontSize: "0.8rem", opacity: page === 1 ? 0.4 : 1 }}>
-              Previous
-            </button>
-            <span className="text-sm text-text3">Page {page} of {totalPages}</span>
-            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-              className="btn-outline" style={{ padding: "0.35rem 0.6rem", fontSize: "0.8rem", opacity: page === totalPages ? 0.4 : 1 }}>
-              Next
-            </button>
-          </div>
-        )}
-      </div>
+                <span style={{
+                  padding: "0.3rem 0.7rem", borderRadius: 8,
+                  background: "rgba(0, 210, 255, 0.08)", color: "var(--gold)",
+                  fontSize: "0.8rem", fontWeight: 600, whiteSpace: "nowrap",
+                }}>
+                  {a.category}
+                </span>
+
+                <div style={{ fontSize: "0.82rem", color: "var(--text3)", whiteSpace: "nowrap" }}>
+                  <div>{a.applicantPhone}</div>
+                  <div style={{ fontSize: "0.75rem" }}>{a.location?.city || "N/A"}</div>
+                </div>
+
+                <div style={{ fontSize: "0.78rem", color: "var(--text3)", whiteSpace: "nowrap" }}>
+                  {new Date(a.createdAt).toLocaleDateString()}
+                </div>
+
+                <div style={{ display: "flex", gap: "0.4rem", flexShrink: 0 }}>
+                  <span className="admin-action-btn" style={{ padding: "0.45rem", borderRadius: "8px" }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2" style={{ marginTop: "1.5rem" }}>
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+            className="btn-outline" style={{ padding: "0.35rem 0.6rem", fontSize: "0.8rem", opacity: page === 1 ? 0.4 : 1 }}>
+            Previous
+          </button>
+          <span className="text-sm text-text3">Page {page} of {totalPages}</span>
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+            className="btn-outline" style={{ padding: "0.35rem 0.6rem", fontSize: "0.8rem", opacity: page === totalPages ? 0.4 : 1 }}>
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }
