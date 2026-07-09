@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { siteConfig } from "@/lib/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
+import ForArtistsCTA from "@/components/for-artists/ForArtistsCTA";
 
 export const metadata = pageMetadata({
   title: "For Artists — Join India's Premium Booking Platform",
@@ -134,20 +135,7 @@ export default function ForArtistsPage() {
         </div>
       </div>
 
-      <div className="page-cta-banner">
-        <span className="ornament">✦ ✦ ✦</span>
-        <h2>
-          Ready to <em className="cta-accent">Join?</em>
-        </h2>
-        <p>
-          Create your artist profile in minutes and start receiving booking requests from top event organisers.
-        </p>
-        <div className="cta-actions">
-          <Link href="/contact" className="btn-outline">
-            Talk to Our Team
-          </Link>
-        </div>
-      </div>
+      <ForArtistsCTA />
     </div>
   );
 }
