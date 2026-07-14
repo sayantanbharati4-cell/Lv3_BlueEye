@@ -62,3 +62,17 @@ Important files:
 For development and testing, ensure `ADMIN_EMAIL` and `ADMIN_PASSWORD` are set in your `.env.local` file.
 
 Admin panel can be accessed at `/admin` or via the Navbar when logged in.
+
+## Backup & Restore
+
+Backup the database:
+
+```bash
+mongodump --uri="YOUR_MONGODB_URI" --db BlueEyeEntertainment --out backup
+```
+
+Restore the database from a backup:
+
+```bash
+mongorestore --uri="YOUR_MONGODB_URI" --db BlueEyeEntertainment C:\MongoBackups\BlueEyeEntertainment
+```
