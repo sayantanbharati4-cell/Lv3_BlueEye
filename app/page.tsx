@@ -97,14 +97,6 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      name: "Can I book artists for destination weddings?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Yes, many of our artists are available for destination weddings across India. Travel and accommodation are coordinated as part of the booking package.",
-      },
-    },
-    {
-      "@type": "Question",
       name: "Do you have packages for college fests?",
       acceptedAnswer: {
         "@type": "Answer",
