@@ -55,6 +55,62 @@ const faqSchema = {
         text: "We serve all major Indian cities including Mumbai, Delhi, Bangalore, Hyderabad, Chennai, Kolkata, Pune, Jaipur, Lucknow, Ahmedabad, and many more.",
       },
     },
+    {
+      "@type": "Question",
+      name: "How does Blue Eye verify artists?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Every artist undergoes a multi-step verification process including identity verification, past performance review, and client reference checks. Only verified artists receive the '100% Verified' badge.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What happens after I submit a booking enquiry?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Our team reviews your enquiry within 24 hours and reaches out with artist availability, pricing options, and package details. You can compare options and confirm the booking through your dashboard.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Are there any hidden fees?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No. The price you see and agree upon is the final price. There are no booking fees, service charges, or hidden commissions added after confirmation.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How far in advance should I book?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "We recommend booking at least 4-6 weeks in advance for popular artists, especially during wedding season. We also accommodate last-minute bookings — reach out and we will check availability.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What payment methods are accepted?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "We accept all major payment methods including UPI, net banking, credit/debit cards, and bank transfers. For corporate bookings, we also support invoice-based payments with GST billing.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I book artists for destination weddings?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes, many of our artists are available for destination weddings across India. Travel and accommodation are coordinated as part of the booking package.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Do you have packages for college fests?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes, we offer special college fest packages with discounted pricing for student-run events — from headliner performers to DJ nights and comedy shows.",
+      },
+    },
   ],
 };
 
