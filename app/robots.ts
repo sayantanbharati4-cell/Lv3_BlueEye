@@ -24,6 +24,14 @@ export default function robots(): MetadataRoute.Robots {
         disallow: "/",
       },
       {
+        userAgent: "Claude-SearchBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "ChatGPT-User",
+        disallow: "/",
+      },
+      {
         userAgent: "CCBot",
         disallow: "/",
       },
@@ -41,6 +49,14 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: "Applebot-Extended",
+        disallow: "/",
+      },
+      {
+        userAgent: "PetalBot",
+        disallow: "/",
+      },
+      {
+        userAgent: "DotBot",
         disallow: "/",
       },
     ],
