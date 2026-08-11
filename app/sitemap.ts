@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/seo/metadata";
 import { categoryPath, cityPath } from "@/lib/seo/slugs";
+import { slugify } from "@/lib/utils/slugify";
 
 export const revalidate = 3600;
 
@@ -36,12 +37,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let artistEntries: MetadataRoute.Sitemap = [];
   let categoryEntries: MetadataRoute.Sitemap = [];
   let cityEntries: MetadataRoute.Sitemap = [];
+  let comboEntries: MetadataRoute.Sitemap = [];
   let eventEntries: MetadataRoute.Sitemap = [];
   let blogEntries: MetadataRoute.Sitemap = [];
 
   try {
     const { getArtistsForSitemap } = await import("@/lib/services/artistService");
-    const { getDistinctCategories, getDistinctCities, getLatestCategoryUpdates, getLatestCityUpdates } = await import(
+    const { getDistinctCategories, getDistinctCities, getLatestCategoryUpdates, getLatestCityUpdates, getCategoryCityCounts } = await import(
       "@/lib/services/searchService"
     );
     const { getEventsForSitemap } = await import("@/lib/services/eventService");
@@ -49,7 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     type SitemapEntry = { slug: string; updatedAt?: string };
 
-    const [artists, categories, cities, events, blogPosts, catUpdates, cityUpdates] = await Promise.all([
+    const [artists, categories, cities, events, blogPosts, catUpdates, cityUpdates, combos] = await Promise.all([
       getArtistsForSitemap().catch(() => [] as SitemapEntry[]),
       getDistinctCategories().catch(() => [] as string[]),
       getDistinctCities().catch(() => [] as string[]),
@@ -57,6 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       getBlogPostsForSitemap().catch(() => [] as SitemapEntry[]),
       getLatestCategoryUpdates().catch(() => [] as { category: string; updatedAt: Date }[]),
       getLatestCityUpdates().catch(() => [] as { city: string; updatedAt: Date }[]),
+      getCategoryCityCounts(3).catch(() => [] as { category: string; city: string; count: number }[]),
     ]);
 
     const categoryUpdateMap = new Map(catUpdates.map((c: { category: string; updatedAt: Date }) => [c.category.toLowerCase(), c.updatedAt]));
@@ -90,6 +93,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         })
       );
 
+    comboEntries = combos
+      .filter(Boolean)
+      .map((combo: { category: string; city: string }) =>
+        entry(`/category/${slugify(combo.category)}/${slugify(combo.city)}`, {
+          priority: 0.7,
+          changeFrequency: "weekly",
+        })
+      );
+
     eventEntries = events.map((event: SitemapEntry) =>
       entry(`/events/${event.slug}`, {
         priority: 0.8,
@@ -116,6 +128,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticEntries,
     ...categoryEntries,
     ...cityEntries,
+    ...comboEntries,
     ...artistEntries,
     ...eventEntries,
     ...blogEntries,

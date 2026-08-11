@@ -18,7 +18,7 @@ export async function searchArtists(
   await connectToDatabase();
   const query: any = { $text: { $search: q } };
   if (filters?.category) query["search.category_lower"] = filters.category.toLowerCase();
-  if (filters?.city) query["search.city_lower"] = filters.city.toLowerCase();
+  if (filters?.city) query["search.city_lower"] = { $in: getCityVariants(filters.city) };
   
   const page = Math.max(1, pagination?.page || 1);
   const limit = Math.max(1, Math.min(100, pagination?.limit || 12));
@@ -91,8 +91,8 @@ export async function suggestArtists(
   if (filters?.city) {
     conditions.push({
       $or: [
-        { "search.city_lower": filters.city.toLowerCase() },
-        { "location.city": { $regex: new RegExp(`^${filters.city}$`, "i") } },
+        { "search.city_lower": { $in: getCityVariants(filters.city) } },
+        { "location.city": { $in: getCityVariants(filters.city).map((v) => new RegExp(`^${v}$`, "i")) } },
       ],
     });
   }
@@ -112,36 +112,163 @@ export async function getDistinctCategories() {
 }
 
 const CITY_ALIASES: Record<string, string> = {
+  // Delhi cluster
   "new delhi": "Delhi",
   "new delhi ncr": "Delhi",
   "delhi ncr": "Delhi",
   "delhi": "Delhi",
   "newdelhi": "Delhi",
-  "bengaluru": "Bangalore",
-  "kolkata": "Kolkata",
+  "central delhi": "Delhi",
+  "east delhi": "Delhi",
+  "north delhi": "Delhi",
+  "south delhi": "Delhi",
+  "west delhi": "Delhi",
+  "north east delhi": "Delhi",
+  "north west delhi": "Delhi",
+  "south west delhi": "Delhi",
+  "connaught place": "Delhi",
+  "saket": "Delhi",
+  // Mumbai cluster
   "mumbai": "Mumbai",
+  "mumbai, maharashtra": "Mumbai",
+  "mumbai, maharshtra": "Mumbai",
+  "mumbai, maharastra": "Mumbai",
+  "bombay": "Mumbai",
+  "r/n ward": "Mumbai",
+  "navi mumbai panvel raigad": "Navi Mumbai",
+  // Bangalore cluster
+  "bangalore": "Bangalore",
+  "bangalore hq": "Bangalore",
+  "bengaluru": "Bangalore",
+  "bengaluru, karnataka": "Bangalore",
+  "mysore": "Mysore",
+  "mysuru": "Mysore",
+  // Kolkata cluster
+  "kolkata": "Kolkata",
+  "kolkata, west bengal": "Kolkata",
+  "calcutta": "Kolkata",
+  "south 24 parganas": "Kolkata",
+  // Chennai cluster
   "chennai": "Chennai",
+  "chennai, tamil nadu": "Chennai",
+  // Hyderabad cluster
   "hyderabad": "Hyderabad",
+  "hyderabad, telangana": "Hyderabad",
+  "k.v.rangareddy": "Hyderabad",
+  // Pune cluster
   "pune": "Pune",
+  "pune ": "Pune",
+  "pune, maharashtra": "Pune",
+  // Ahmedabad cluster
   "ahmedabad": "Ahmedabad",
+  "ahmadabad": "Ahmedabad",
+  "ahmedabad hq": "Ahmedabad",
+  "ahmedabad, gujarat": "Ahmedabad",
+  "gandhi nagar": "Gandhinagar",
+  // Jaipur cluster
   "jaipur": "Jaipur",
+  "jaipur hq": "Jaipur",
+  // Lucknow cluster
   "lucknow": "Lucknow",
-  "surat": "Surat",
-  "indore": "Indore",
-  "chandigarh": "Chandigarh",
+  "lucknow hq": "Lucknow",
+  "lucknow, uttar pradesh": "Lucknow",
+  // Bhopal cluster
   "bhopal": "Bhopal",
-  "nagpur": "Nagpur",
+  "bhopal hq": "Bhopal",
+  "bhopal, madhya pradesh": "Bhopal",
+  // Chandigarh cluster
+  "chandigarh": "Chandigarh",
+  "chandigarh hq": "Chandigarh",
+  "chandigarh region": "Chandigarh",
+  // Guwahati cluster
+  "guwahati": "Guwahati",
+  "guwahati hq": "Guwahati",
+  "guwahati, assam": "Guwahati",
+  "kamrup": "Guwahati",
+  // Other known merges
+  "shimla": "Shimla",
+  "shimla hq": "Shimla",
+  "srinagar": "Srinagar",
+  "srinagar hq": "Srinagar",
   "patna": "Patna",
-  "kochi": "Kochi",
-  "coimbatore": "Coimbatore",
-  "goa": "Goa",
+  "patna hq": "Patna",
+  "ludhiana": "Ludhiana",
+  "ludhiana, punjab": "Ludhiana",
+  "jalandhar": "Jalandhar",
+  "jalandhar, punjab": "Jalandhar",
+  "mohali": "Mohali",
+  "mohali, punjab": "Mohali",
+  "hisar": "Hisar",
+  "hisar, haryana": "Hisar",
+  "kanpur": "Kanpur",
+  "kanpur nagar": "Kanpur",
+  "allahabad": "Prayagraj",
+  "allahabad (prayagraj)": "Prayagraj",
   "vizag": "Visakhapatnam",
-  "thiruvananthapuram": "Thiruvananthapuram",
+  "goa-panaji": "Panaji",
+  "north goa": "Panaji",
+  "gautam buddha nagar": "Noida",
+  "ambala": "Ambala",
+  "ambala  hq": "Ambala",
+  "bilaspur(chhattisgarh)": "Bilaspur",
+  "bilaspur(himachal)": "Bilaspur",
+  "udhagamandalam": "Ooty",
 };
 
 const CITY_BLOCKLIST = new Set([
+  // Pakistan
   "lahore", "karachi", "islamabad", "rawalpindi", "faisalabad",
+  "abbotabad, khyber pakhtunkhwa", "lyari, karachi", "karachi, sindh", "gilgit",
+  // Bangladesh
+  "dhaka",
+  // USA
+  "orlando", "los angeles", "massachusetts", "minneapolis", "united states",
+  "north miami beach", "dallas, texas",
+  // UK
+  "london", "london borough of islington", "essex, england",
+  // Canada
+  "toronto", "winnipeg, manitoba",
+  // Australia
+  "perth", "western australia",
+  // France
+  "paris",
+  // Afghanistan
+  "kabul",
+  // Congo
+  "bukavu, belgian congo",
+  // UAE
+  "dubai",
+  // Garbage / non-city values
+  "not known", "not known (lives in new delhi)", "",
+  "india", "punjab", "telangana", "odisha", "bihar",
+  "vemulawada mandal", "kalenahalli arsikere, hassan district",
+  "siddartha nagar", "matigara block", "haveli subdistrict",
+  "whitestone, devon", "moodbidri, mangalore",
 ]);
+
+const CITY_ALIAS_REVERSE: Map<string, string[]> = (() => {
+  const map = new Map<string, string[]>();
+  for (const [raw, canonical] of Object.entries(CITY_ALIASES)) {
+    const key = canonical.toLowerCase();
+    const list = map.get(key) || [];
+    if (!list.includes(raw)) list.push(raw);
+    map.set(key, list);
+  }
+  return map;
+})();
+
+/** Returns every raw city value that should match a given canonical city (case-insensitive). */
+export function getCityVariants(city: string): string[] {
+  const lower = city.trim().toLowerCase();
+  const raw = CITY_ALIASES[lower];
+  const canonical = raw || titleCase(city.trim());
+  const variants = CITY_ALIAS_REVERSE.get(canonical.toLowerCase()) || [];
+  const set = new Set(variants.map((v) => v.trim().toLowerCase()));
+  set.add(lower);
+  set.add(canonical.toLowerCase());
+  set.delete("");
+  return Array.from(set);
+}
 
 function titleCase(s: string): string {
   return s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
@@ -156,16 +283,31 @@ function normalizeCity(city: string): string {
   return titleCase(trimmed);
 }
 
+export const MIN_CITY_ARTISTS = 2;
+
 export async function getDistinctCities() {
   await connectToDatabase();
-  const cities = await Artist.distinct("location.city", {
-    $or: [
-      { "location.country": "India" },
-      { "location.country": { $exists: false } },
-    ],
-  });
-  const normalized = [...new Set(cities.filter(Boolean).map(normalizeCity).filter(Boolean))];
-  return normalized.sort();
+  const raw = await Artist.aggregate<{ _id: string; count: number }>([
+    {
+      $match: {
+        $or: [
+          { "location.country": "India" },
+          { "location.country": { $exists: false } },
+        ],
+      },
+    },
+    { $group: { _id: { $toLower: "$location.city" }, count: { $sum: 1 } } },
+  ]);
+  const canonicalCounts = new Map<string, number>();
+  for (const { _id, count } of raw) {
+    const canonical = normalizeCity(_id);
+    if (!canonical) continue;
+    canonicalCounts.set(canonical, (canonicalCounts.get(canonical) || 0) + count);
+  }
+  return Array.from(canonicalCounts.entries())
+    .filter(([, count]) => count >= MIN_CITY_ARTISTS)
+    .map(([city]) => city)
+    .sort();
 }
 
 export async function getCategoryCounts() {
@@ -190,6 +332,43 @@ export async function getLatestCategoryUpdates() {
   return result as { category: string; updatedAt: Date }[];
 }
 
+export async function getCategoryCityCounts(minCount = 3) {
+  await connectToDatabase();
+  const result = await Artist.aggregate<{ _id: { category: string; city: string }; count: number }>([
+    {
+      $match: {
+        category: { $exists: true, $ne: "" },
+        "location.city": { $exists: true, $ne: "" },
+        $or: [
+          { "location.country": "India" },
+          { "location.country": { $exists: false } },
+        ],
+      },
+    },
+    {
+      $group: {
+        _id: {
+          category: "$category",
+          city: { $toLower: "$location.city" },
+        },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+  const canonicalCounts = new Map<string, { category: string; city: string; count: number }>();
+  for (const { _id, count } of result) {
+    const canonicalCity = normalizeCity(_id.city);
+    if (!canonicalCity) continue;
+    const key = `${_id.category.toLowerCase()}|${canonicalCity.toLowerCase()}`;
+    const existing = canonicalCounts.get(key) || { category: _id.category, city: canonicalCity, count: 0 };
+    existing.count += count;
+    canonicalCounts.set(key, existing);
+  }
+  return Array.from(canonicalCounts.values())
+    .filter((c) => c.count >= minCount)
+    .sort((a, b) => a.category.localeCompare(b.category) || a.city.localeCompare(b.city));
+}
+
 export async function getLatestCityUpdates() {
   await connectToDatabase();
   const result = await Artist.aggregate([
@@ -209,6 +388,7 @@ export async function getLatestCityUpdates() {
   const normalized = new Map<string, Date>();
   for (const item of result as { city: string; updatedAt: Date }[]) {
     const canonical = normalizeCity(item.city);
+    if (!canonical) continue;
     const existing = normalized.get(canonical);
     if (!existing || item.updatedAt > existing) {
       normalized.set(canonical, item.updatedAt);
