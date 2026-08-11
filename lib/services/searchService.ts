@@ -332,6 +332,43 @@ export async function getLatestCategoryUpdates() {
   return result as { category: string; updatedAt: Date }[];
 }
 
+export async function getCategoryCityCounts(minCount = 3) {
+  await connectToDatabase();
+  const result = await Artist.aggregate<{ _id: { category: string; city: string }; count: number }>([
+    {
+      $match: {
+        category: { $exists: true, $ne: "" },
+        "location.city": { $exists: true, $ne: "" },
+        $or: [
+          { "location.country": "India" },
+          { "location.country": { $exists: false } },
+        ],
+      },
+    },
+    {
+      $group: {
+        _id: {
+          category: "$category",
+          city: { $toLower: "$location.city" },
+        },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+  const canonicalCounts = new Map<string, { category: string; city: string; count: number }>();
+  for (const { _id, count } of result) {
+    const canonicalCity = normalizeCity(_id.city);
+    if (!canonicalCity) continue;
+    const key = `${_id.category.toLowerCase()}|${canonicalCity.toLowerCase()}`;
+    const existing = canonicalCounts.get(key) || { category: _id.category, city: canonicalCity, count: 0 };
+    existing.count += count;
+    canonicalCounts.set(key, existing);
+  }
+  return Array.from(canonicalCounts.values())
+    .filter((c) => c.count >= minCount)
+    .sort((a, b) => a.category.localeCompare(b.category) || a.city.localeCompare(b.city));
+}
+
 export async function getLatestCityUpdates() {
   await connectToDatabase();
   const result = await Artist.aggregate([
