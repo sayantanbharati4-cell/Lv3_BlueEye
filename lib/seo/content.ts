@@ -125,6 +125,28 @@ export function citySeoContent(city: string, total: number): string {
   );
 }
 
+export function comboSeoContent(category: string, city: string, total: number): string {
+  const scene = getCityEventScene(city);
+  const lowerCat = category.toLowerCase();
+
+  return (
+    `${scene} ` +
+    `If you're planning ${lowerCat} entertainment in ${capitalize(city)}, ${siteConfig.name} features ${total > 0 ? `${total} verified` : "verified"} ${lowerCat} artists available in the city — ready for weddings, corporate events, college fests, and private parties.` +
+    `\n\n` +
+    `Hiring ${lowerCat} performers in ${capitalize(city)} means working with talent that understands the local audience, venue landscape, and event culture. ` +
+    `We handle vetting, transparent pricing, and end-to-end coordination — from first enquiry to final performance.` +
+    `\n\n` +
+    `Browse the ${lowerCat} artists available in ${capitalize(city)} below, compare profiles and availability, and book directly with confidence. ` +
+    `Each profile includes performance videos, past event photos, genre specialties, and direct booking options.` +
+    `\n\n` +
+    `Looking for more choices? Explore all ${pluralizeCategory(category).toLowerCase()} on ${siteConfig.name}, or browse every entertainer available in ${capitalize(city)}.`
+  );
+}
+
+export function comboMetaDescription(category: string, city: string): string {
+  return `Hire ${pluralizeCategory(category).toLowerCase()} in ${city} for weddings, corporate events, and private parties. Browse verified ${category.toLowerCase()} artists available in ${city} at ${siteConfig.name}.`;
+}
+
 export function categoryMetaDescription(category: string): string {
   const lower = category.toLowerCase();
   if (lower.includes("singer") || lower.includes("vocal"))
