@@ -2,6 +2,7 @@ import type { PipelineStage } from "mongoose";
 import Artist from "@/lib/models/Artist";
 import { connectToDatabase } from "@/lib/db/connect";
 import { slugify } from "@/lib/utils/slugify";
+import { getCityVariants } from "@/lib/services/searchService";
 
 const SORT_MAP: Record<string, Record<string, 1 | -1>> = {
   name_asc: { name: 1 },
@@ -31,11 +32,12 @@ export async function getArtists(params: { category?: string; city?: string; pag
   }
 
   if (params.city) {
+    const cityVariants = getCityVariants(params.city);
     conditions.push({
       $or: [
-        { "search.city_lower": params.city.toLowerCase() },
-        { "location.city": { $regex: new RegExp(`^${params.city}$`, "i") } }
-      ]
+        { "search.city_lower": { $in: cityVariants } },
+        { "location.city": { $in: cityVariants.map((v) => new RegExp(`^${v}$`, "i")) } },
+      ],
     });
   }
 

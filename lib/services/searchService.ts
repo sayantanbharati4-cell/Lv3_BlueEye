@@ -18,7 +18,7 @@ export async function searchArtists(
   await connectToDatabase();
   const query: any = { $text: { $search: q } };
   if (filters?.category) query["search.category_lower"] = filters.category.toLowerCase();
-  if (filters?.city) query["search.city_lower"] = filters.city.toLowerCase();
+  if (filters?.city) query["search.city_lower"] = { $in: getCityVariants(filters.city) };
   
   const page = Math.max(1, pagination?.page || 1);
   const limit = Math.max(1, Math.min(100, pagination?.limit || 12));
@@ -91,8 +91,8 @@ export async function suggestArtists(
   if (filters?.city) {
     conditions.push({
       $or: [
-        { "search.city_lower": filters.city.toLowerCase() },
-        { "location.city": { $regex: new RegExp(`^${filters.city}$`, "i") } },
+        { "search.city_lower": { $in: getCityVariants(filters.city) } },
+        { "location.city": { $in: getCityVariants(filters.city).map((v) => new RegExp(`^${v}$`, "i")) } },
       ],
     });
   }
