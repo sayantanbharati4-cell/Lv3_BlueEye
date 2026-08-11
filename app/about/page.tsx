@@ -2,6 +2,7 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { localBusinessJsonLd } from "@/lib/seo/jsonld";
+import { getRealStats, formatCount } from "@/lib/services/statsService";
 
 export const metadata = pageMetadata({
   title: `About Us`,
@@ -54,14 +55,14 @@ const benefits = [
   },
 ];
 
-const stats = [
-  { value: "20,000+", label: "Verified Artists" },
-  { value: "5,000+", label: "Events Delivered" },
-  { value: "300+", label: "Cities Covered" },
-  { value: "24/7", label: "Concierge Support" },
-];
-
-export default function AboutPage() {
+export default async function AboutPage() {
+  const realStats = await getRealStats().catch(() => null);
+  const stats = [
+    { value: realStats ? formatCount(realStats.artists) : "10k+", label: "Verified Artists" },
+    { value: realStats ? formatCount(realStats.events) : "5,000+", label: "Events Delivered" },
+    { value: realStats ? formatCount(realStats.cities) : "100+", label: "Cities Covered" },
+    { value: "24/7", label: "Concierge Support" },
+  ];
   return (
     <div className="section-inner pt-nav" style={{ minHeight: "90vh", paddingBottom: "4rem" }}>
       <script
@@ -91,7 +92,7 @@ export default function AboutPage() {
           completely hassle-free.
         </p>
         <p>
-          Our curated roster features over <strong style={{ color: "var(--text)" }}>20,000 verified artists</strong> across
+          Our curated roster features over <strong style={{ color: "var(--text)" }}>{realStats ? `${realStats.artists.toLocaleString("en-IN")} verified artists` : "10,000+ verified artists"}</strong> across
           multiple categories including singers, instrumentalists, stand-up comedians, DJs, rappers, bands,
           Bollywood celebrities, and TV personalities.
         </p>
