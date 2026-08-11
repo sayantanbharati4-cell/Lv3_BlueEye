@@ -12,6 +12,7 @@ import Link from "next/link";
 import { breadcrumbJsonLd } from "@/lib/seo/jsonld";
 import { categorySeoContent, categoryMetaDescription } from "@/lib/seo/content";
 import { slugify } from "@/lib/utils/slugify";
+import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
   const categories = await getDistinctCategories();
@@ -26,6 +27,7 @@ export async function generateMetadata({
   const { category } = await params;
   const categories = await getDistinctCategories();
   const label = resolveCategorySlug(category, categories);
+  if (!categories.some((c) => c.toLowerCase() === label.toLowerCase())) notFound();
   return pageMetadata({
     title: `${label} Artists for Hire — Weddings, Corporate & Events in India`,
     description: categoryMetaDescription(label),
@@ -52,6 +54,7 @@ export default async function CategoryArtistsPage({
   ]);
 
   const decodedCategory = resolveCategorySlug(category, categories);
+  if (!categories.some((c) => c.toLowerCase() === decodedCategory.toLowerCase())) notFound();
   const canonicalPath = categoryPath(decodedCategory);
   const currentPage = Math.max(1, parseInt(sParams.page || "1", 10));
 

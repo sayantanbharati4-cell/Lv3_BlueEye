@@ -11,6 +11,7 @@ import Link from "next/link";
 import { breadcrumbJsonLd } from "@/lib/seo/jsonld";
 import { citySeoContent, cityMetaDescription } from "@/lib/seo/content";
 import { slugify } from "@/lib/utils/slugify";
+import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
   const cities = await getDistinctCities();
@@ -25,6 +26,7 @@ export async function generateMetadata({
   const { city } = await params;
   const cities = await getDistinctCities();
   const label = resolveCitySlug(city, cities);
+  if (!cities.some((c) => c.toLowerCase() === label.toLowerCase())) notFound();
   return pageMetadata({
     title: `Book Artists in ${label} — Singers, DJs & Performers for Events`,
     description: cityMetaDescription(label),
@@ -49,6 +51,7 @@ export default async function CityArtistsPage({
   ]);
 
   const decodedCity = resolveCitySlug(city, cities);
+  if (!cities.some((c) => c.toLowerCase() === decodedCity.toLowerCase())) notFound();
   const canonicalPath = cityPath(decodedCity);
   const currentPage = Math.max(1, parseInt(sParams.page || "1", 10));
 

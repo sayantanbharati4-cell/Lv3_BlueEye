@@ -283,16 +283,31 @@ function normalizeCity(city: string): string {
   return titleCase(trimmed);
 }
 
+export const MIN_CITY_ARTISTS = 2;
+
 export async function getDistinctCities() {
   await connectToDatabase();
-  const cities = await Artist.distinct("location.city", {
-    $or: [
-      { "location.country": "India" },
-      { "location.country": { $exists: false } },
-    ],
-  });
-  const normalized = [...new Set(cities.filter(Boolean).map(normalizeCity).filter(Boolean))];
-  return normalized.sort();
+  const raw = await Artist.aggregate<{ _id: string; count: number }>([
+    {
+      $match: {
+        $or: [
+          { "location.country": "India" },
+          { "location.country": { $exists: false } },
+        ],
+      },
+    },
+    { $group: { _id: { $toLower: "$location.city" }, count: { $sum: 1 } } },
+  ]);
+  const canonicalCounts = new Map<string, number>();
+  for (const { _id, count } of raw) {
+    const canonical = normalizeCity(_id);
+    if (!canonical) continue;
+    canonicalCounts.set(canonical, (canonicalCounts.get(canonical) || 0) + count);
+  }
+  return Array.from(canonicalCounts.entries())
+    .filter(([, count]) => count >= MIN_CITY_ARTISTS)
+    .map(([city]) => city)
+    .sort();
 }
 
 export async function getCategoryCounts() {
