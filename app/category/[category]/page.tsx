@@ -10,7 +10,7 @@ import { pageMetadata } from "@/lib/seo/metadata";
 import { categoryPath, resolveCategorySlug } from "@/lib/seo/slugs";
 import Link from "next/link";
 import { breadcrumbJsonLd } from "@/lib/seo/jsonld";
-import { categorySeoContent, categoryMetaDescription } from "@/lib/seo/content";
+import { categorySeoContent, categoryMetaDescription, pluralizeCategory } from "@/lib/seo/content";
 import { slugify } from "@/lib/utils/slugify";
 import { notFound } from "next/navigation";
 
@@ -242,7 +242,7 @@ export default async function CategoryArtistsPage({
                     textTransform: "capitalize",
                   }}
                 >
-                  Hire {c}s ↗
+                  Hire {pluralizeCategory(c)} ↗
                 </a>
               ))}
           </div>
