@@ -265,6 +265,49 @@ Action: **Block**.
 This uses one of the 5 free custom-rule slots. Keep a separate rule for the
 Razorpay webhook if you need to skip bot checks.
 
+### 4.6b Block AI bots (maintained list) — the answer to "new bots keep appearing"
+
+**Security → Bots → Block AI bots** → enable.
+
+This is a single switch whose crawler list Cloudflare maintains. Letting them
+keep the list is the only sustainable approach: a hand-written user-agent list
+is always one bot behind, and the origin gate in `lib/seo/botPolicy.ts` only
+sees bots that *declare* themselves.
+
+Keep the social/link-preview fetchers working (WhatsApp, Discord, Twitter/X,
+LinkedIn, Slack, Telegram, Pinterest, Reddit). Blocking them saves crawl traffic
+but breaks every shared link preview, which costs more than it saves.
+
+Optional WAF rule for crawler-shaped clients that are not on the AI list
+(**Security → WAF → Custom rules**, one of the 5 free slots):
+
+```txt
+(lower(http.user_agent) matches "(bot|crawler|spider)/")
+and not (lower(http.user_agent) contains "googlebot")
+and not (lower(http.user_agent) contains "bingbot")
+and not (lower(http.user_agent) contains "oai-searchbot")
+and not (lower(http.user_agent) contains "chatgpt-user")
+and not (lower(http.user_agent) contains "applebot")
+and not (lower(http.user_agent) contains "duckduckbot")
+and not (lower(http.user_agent) contains "facebookexternalhit")
+and not (lower(http.user_agent) contains "twitterbot")
+and not (lower(http.user_agent) contains "linkedinbot")
+and not (lower(http.user_agent) contains "discordbot")
+and not (lower(http.user_agent) contains "slackbot")
+and not (lower(http.user_agent) contains "telegrambot")
+and not (lower(http.user_agent) contains "pinterestbot")
+and not (lower(http.user_agent) contains "redditbot")
+and not (lower(http.user_agent) contains "whatsapp")
+and not (lower(http.user_agent) contains "uptimerobot")
+and not (lower(http.user_agent) contains "pingdom")
+```
+
+Action: **Block**. Verify Googlebot/Bingbot still get 200 and that a shared
+WhatsApp/Discord link still renders a preview before walking away.
+
+Caution: enable one control at a time. Bot Fight Mode + this rule + the rate
+limit together can challenge Razorpay's webhook; keep the skip rule from §4.5.
+
 ### 4.7 Rate limiting rule (free plan limits)
 
 **Security → WAF → Rate limiting rules → Create rule**.

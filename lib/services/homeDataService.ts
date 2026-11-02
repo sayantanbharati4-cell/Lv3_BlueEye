@@ -6,6 +6,13 @@ import { cacheConfig } from "@/lib/config/cache";
 /** @deprecated Use cacheConfig.homeData.redisKey */
 export const HOME_CACHE_KEY = cacheConfig.homeData.redisKey;
 
+/**
+ * Five artists drive every homepage image slot: the hero carousel card, the
+ * bento grid (sliced to 6) and the mouse-trail pool. Fetching ten meant up to
+ * ten extra image URLs for slots that were never rendered.
+ */
+export const HOME_ARTIST_COUNT = 5;
+
 export type HomePageData = {
   randomArtists: Awaited<ReturnType<typeof getRandomArtists>>;
   categories: string[];
@@ -13,13 +20,14 @@ export type HomePageData = {
 };
 
 export async function getHomePageData(): Promise<HomePageData> {
-  // v2: projection now trims artist documents to the fields the homepage renders.
-  const cacheKey = `${cacheConfig.homeData.redisKey}:v2`;
+  // v3: homepage payload trimmed from 10 to 5 artists (hero card + bento grid
+  // + mouse-trail pool). Bump again whenever this shape changes.
+  const cacheKey = `${cacheConfig.homeData.redisKey}:v3`;
   const cached = await getCache<HomePageData>(cacheKey);
   if (cached) return cached;
 
   const [randomArtists, categories, counts] = await Promise.all([
-    getRandomArtists(10),
+    getRandomArtists(HOME_ARTIST_COUNT),
     getDistinctCategories(),
     getCategoryCounts(),
   ]);

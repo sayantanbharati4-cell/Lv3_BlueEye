@@ -83,12 +83,14 @@ export const metadata: Metadata = {
     images: [siteConfig.ogImage],
     creator: siteConfig.twitterHandle,
   },
+  // Declared here only. Do not reintroduce app/favicon.ico, app/icon.png or
+  // app/apple-icon.png: the file conventions emit a second set of <link> tags on
+  // top of these, which made browsers download /favicon.ico twice.
   icons: {
     icon: [
       { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
       { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
     ],
-    shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
   manifest: `/site.webmanifest`,

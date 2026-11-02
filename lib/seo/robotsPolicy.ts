@@ -7,6 +7,21 @@ export const PRIVATE_PATHS = [
   "/reset-password",
   "/switch-account",
   "/my-ticket/",
+  "/search",
+] as const;
+
+/**
+ * Tracking parameters create endlessly duplicated crawl URLs. They never deserve
+ * an index entry, so crawlers are told not to spend budget on them.
+ */
+export const DISALLOWED_QUERY_PATTERNS = [
+  "/*?utm_",
+  "/*?fbclid=",
+  "/*?gclid=",
+  "/*?gbraid=",
+  "/*?wbraid=",
+  "/*?msclkid=",
+  "/*?ref=",
 ] as const;
 
 /**
@@ -34,6 +49,10 @@ export const ALLOWED_BOTS = [
   "TelegramBot",
   "Pinterestbot",
   "redditbot",
+  // ChatGPT fetchers that bring citations/referrals. GPTBot (training) stays
+  // blocked below, so the site is not used as AI training data.
+  "OAI-SearchBot",
+  "ChatGPT-User",
 ] as const;
 
 /**
@@ -42,7 +61,6 @@ export const ALLOWED_BOTS = [
  */
 export const BLOCKED_BOTS = [
   "GPTBot",
-  "ChatGPT-User",
   "ClaudeBot",
   "Claude-SearchBot",
   "Claude-User",
@@ -98,6 +116,24 @@ export const BLOCKED_BOTS = [
   "ChathiveCrawler",
   "Retool",
   "Instapaper",
+  "AI2Bot",
+  "Ai2Bot-Dolma",
+  "ImagesiftBot",
+  "img2dataset",
+  "FriendlyCrawler",
+  "PanguBot",
+  "Timpibot",
+  "VelenPublicWebCrawler",
+  "Webzio-Extended",
+  "YouBot",
+  "iaskspider",
+  "cohere-training-data-crawler",
+  "Screaming Frog SEO Spider",
+  "SeekportBot",
+  "linkfluence",
+  "netEstate NE Crawler",
+  "SiteAuditBot",
+  "Xenu Link Sleuth",
 ] as const;
 
 export type RobotsRule = {
@@ -111,7 +147,7 @@ export function buildRobotsRules(): RobotsRule[] {
     {
       userAgent: "*",
       allow: "/",
-      disallow: [...PRIVATE_PATHS],
+      disallow: [...PRIVATE_PATHS, ...DISALLOWED_QUERY_PATTERNS],
     },
     ...BLOCKED_BOTS.map((userAgent) => ({
       userAgent,

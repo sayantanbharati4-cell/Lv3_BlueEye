@@ -10,6 +10,7 @@ import {
 } from "./lib/cache/publicRoutes";
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   allowedDevOrigins: ["192.168.1.2"],
   // NextAuth domain configuration - ensure cookies work correctly across domains
   env: {
@@ -67,7 +68,8 @@ const nextConfig: NextConfig = {
       },
       {
         // Cache static assets aggressively
-        source: "/(.*)\\.(ico|png|jpg|jpeg|svg|webp|woff|woff2)",
+        source:
+          "/(.*)\\.(ico|png|jpg|jpeg|svg|webp|avif|gif|mp4|webm|woff|woff2|ttf|otf)",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { legacyRedirectPath } from "@/lib/seo/legacyRoutes";
+import { isBlockedCrawler } from "@/lib/seo/botPolicy";
 import { slugify } from "@/lib/utils/slugify";
 
 /**
@@ -10,6 +11,28 @@ import { slugify } from "@/lib/utils/slugify";
  */
 export default function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+
+  // Enforce the crawler allowlist on the paths this proxy already covers, so
+  // blocked bots cost a redirect check instead of a page render. Only a few
+  // hundred bytes are returned, and the 403 is never cacheable.
+  // Broader coverage belongs at Cloudflare (see docs/CLOUDFLARE_TURNSTILE_SETUP.md)
+  // because widening this matcher adds an edge invocation per request.
+  if (isBlockedCrawler(request.headers.get("user-agent"))) {
+    return new NextResponse("Forbidden", {
+      status: 403,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "private, no-store, max-age=0",
+        // next.config.ts advertises shared caching for these paths, and CDN
+        // headers win over Cache-Control at Netlify/Cloudflare. Without these
+        // two lines a bot's 403 could be cached and served to real visitors.
+        "Netlify-CDN-Cache-Control": "no-store",
+        "CDN-Cache-Control": "no-store",
+        Vary: "User-Agent",
+        "X-Robots-Tag": "noindex, nofollow",
+      },
+    });
+  }
 
   const legacyPath = legacyRedirectPath(pathname, request.nextUrl.searchParams);
   if (legacyPath) {

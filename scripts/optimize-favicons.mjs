@@ -10,7 +10,6 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, "..");
 const publicDir = path.join(root, "public");
-const appDir = path.join(root, "app");
 
 const SOURCE = path.join(publicDir, "icon.png");
 
@@ -58,10 +57,11 @@ await writePng(48, path.join(publicDir, "favicon-48x48.png"));
 await writePng(96, path.join(publicDir, "favicon-96x96.png"));
 await writePng(180, path.join(publicDir, "apple-touch-icon.png"));
 await writePng(192, path.join(publicDir, "android-chrome-192x192.png"));
-await writePng(96, path.join(appDir, "icon.png"));
-await writePng(180, path.join(appDir, "apple-icon.png"));
 
 await writeIco(path.join(publicDir, "favicon.ico"));
-fs.copyFileSync(path.join(publicDir, "favicon.ico"), path.join(appDir, "favicon.ico"));
 
-console.log("\nDone. favicon.ico copied to app/ for Next.js.");
+// Icons are declared only in app/layout.tsx metadata. Do not copy them into
+// app/ as files: app/favicon.ico, app/icon.png and app/apple-icon.png are file
+// conventions that emit a second set of <link> tags, which made browsers
+// download /favicon.ico twice (measured: +14 KiB per first visit).
+console.log("\nDone. Icons live in public/ and are declared in app/layout.tsx metadata.");
