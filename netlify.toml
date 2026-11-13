@@ -21,6 +21,12 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
+  for = "/.well-known/traffic-advice"
+  [headers.values]
+    Content-Type = "application/trafficadvice+json"
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
   for = "/*.png"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"

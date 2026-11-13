@@ -23,9 +23,7 @@ export default function proxy(request: NextRequest) {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "private, no-store, max-age=0",
-        // next.config.ts advertises shared caching for these paths, and CDN
-        // headers win over Cache-Control at Netlify/Cloudflare. Without these
-        // two lines a bot's 403 could be cached and served to real visitors.
+        // The 403 must never be cached or shared with real visitors.
         "Netlify-CDN-Cache-Control": "no-store",
         "CDN-Cache-Control": "no-store",
         Vary: "User-Agent",
