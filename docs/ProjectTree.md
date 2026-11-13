@@ -45,11 +45,13 @@ BlueEye/
 ├── docs/                      # Documentation
 ├── lib/
 │   ├── auth/                  # Auth Config
+│   ├── cache/                 # Cache classification + revalidation
 │   ├── config/                # Site Config (site.ts)
 │   ├── db/                    # DB Connection
 │   ├── models/                # Mongoose Models
 │   ├── services/              # Business Logic
 │   └── utils/                 # Helpers
 ├── public/                    # Assets
+│   └── .well-known/           # Chrome prefetch-proxy opt-out
 └── styles/                    # CSS (globals.css)
 ```
