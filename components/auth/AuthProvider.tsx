@@ -32,6 +32,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [hint, setHint] = useState<"1" | "0" | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHint(readHint());
   }, []);
 

@@ -1,6 +1,6 @@
 import { connectToDatabase } from "@/lib/db/connect";
 import Review from "@/lib/models/Review";
-import User from "@/lib/models/User";
+import "@/lib/models/User";
 import { unstable_cache } from "next/cache";
 
 export type HomeReview = {

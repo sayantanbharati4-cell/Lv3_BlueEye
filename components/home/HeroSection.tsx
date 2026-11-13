@@ -33,10 +33,8 @@ export default function HeroSection({ categories, artists: initialArtists, event
   // fallback premium mock data to ensure layout always looks gorgeous
   const fallbackArtists: Artist[] = [];
 
-  const fallbackEvents: Event[] = [];
-
   // states for dynamic widgets
-  const [artists, setArtists] = useState<Artist[]>(initialArtists && initialArtists.length > 0 ? initialArtists : fallbackArtists);
+  const [artists] = useState<Artist[]>(initialArtists && initialArtists.length > 0 ? initialArtists : fallbackArtists);
   const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
 
   const categoriesGrid = [
