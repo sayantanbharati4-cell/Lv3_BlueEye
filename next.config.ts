@@ -1,13 +1,5 @@
 import type { NextConfig } from "next";
-import {
-  PRIVATE_CACHE_CONTROL,
-  PRIVATE_HTML_SOURCES,
-  SHARED_HTML_CACHE_CONTROL,
-  SHARED_HTML_NETLIFY_CACHE_CONTROL,
-  SHARED_HTML_SOURCES,
-  SHARED_NON_HTML_SOURCES,
-  SHARED_STATIC_CACHE_CONTROL,
-} from "./lib/cache/publicRoutes";
+import { PRIVATE_CACHE_CONTROL, PRIVATE_HTML_SOURCES } from "./lib/cache/publicRoutes";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -74,31 +66,10 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
-      // Advertise shared caching to both Netlify and Cloudflare. Cloudflare
-      // still needs a Cache Rule for extensionless HTML; RSC/prefetch requests
-      // must bypass that rule so they never share an HTML cache entry.
-      ...SHARED_HTML_SOURCES.map((source) => ({
-        source,
-        headers: [
-          { key: "Cache-Control", value: SHARED_HTML_CACHE_CONTROL },
-          {
-            key: "Netlify-CDN-Cache-Control",
-            value: SHARED_HTML_NETLIFY_CACHE_CONTROL,
-          },
-          { key: "CDN-Cache-Control", value: SHARED_HTML_NETLIFY_CACHE_CONTROL },
-        ],
-      })),
-      ...SHARED_NON_HTML_SOURCES.map((source) => ({
-        source,
-        headers: [
-          { key: "Cache-Control", value: SHARED_STATIC_CACHE_CONTROL },
-          {
-            key: "Netlify-CDN-Cache-Control",
-            value: SHARED_HTML_NETLIFY_CACHE_CONTROL,
-          },
-          { key: "CDN-Cache-Control", value: SHARED_HTML_NETLIFY_CACHE_CONTROL },
-        ],
-      })),
+      // Public pages intentionally do not get a blanket Cache-Control header.
+      // Next/Netlify must emit the per-route TTL (1y static, ISR revalidate,
+      // or durable edge cache). A fixed s-maxage=3600 here caused Netlify Edge
+      // to revalidate every public page forever (304 -> function invocation).
       // Auth, admin, search and ticket pages must never be shared-cached.
       ...PRIVATE_HTML_SOURCES.map((source) => ({
         source,

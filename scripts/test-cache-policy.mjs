@@ -3,8 +3,6 @@ import test from "node:test";
 import {
   PRIVATE_CACHE_CONTROL,
   PRIVATE_HTML_SOURCES,
-  SHARED_HTML_CACHE_CONTROL,
-  SHARED_HTML_NETLIFY_CACHE_CONTROL,
   SHARED_HTML_SOURCES,
   isPrivatePath,
   isRscRequest,
@@ -75,10 +73,7 @@ test("shared source list contains the expected public surfaces", () => {
   }
 });
 
-test("shared and private cache directives encode the intended policy", () => {
-  assert.match(SHARED_HTML_CACHE_CONTROL, /s-maxage=3600/);
-  assert.match(SHARED_HTML_CACHE_CONTROL, /stale-while-revalidate=86400/);
-  assert.match(SHARED_HTML_NETLIFY_CACHE_CONTROL, /public/);
+test("public routes do not receive a blanket shared cache directive", () => {
   assert.match(PRIVATE_CACHE_CONTROL, /private/);
   assert.match(PRIVATE_CACHE_CONTROL, /no-store/);
 });

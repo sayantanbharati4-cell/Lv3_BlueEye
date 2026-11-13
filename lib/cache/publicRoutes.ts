@@ -37,15 +37,10 @@ export const SHARED_NON_HTML_SOURCES = [
   "/sitemaps/:path*",
 ] as const;
 
-export const SHARED_HTML_CACHE_CONTROL =
-  "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400";
-
-export const SHARED_HTML_NETLIFY_CACHE_CONTROL =
-  "public, s-maxage=3600, stale-while-revalidate=86400";
-
-export const SHARED_STATIC_CACHE_CONTROL =
-  "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400";
-
+// Cache-Control for shared public routes is emitted by Next/Netlify per route
+// (static 1y, ISR revalidate, durable edge cache). Do not add a blanket
+// s-maxage here: it capped static pages at 1h and caused Netlify Edge to
+// revalidate/render every public page indefinitely.
 export const PRIVATE_CACHE_CONTROL = "private, no-store, max-age=0";
 
 const SHARED_HTML_PATHS = new Set<string>([
