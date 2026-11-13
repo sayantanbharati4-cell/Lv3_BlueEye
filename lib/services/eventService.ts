@@ -5,6 +5,7 @@ import EventUpdate from "@/lib/models/EventUpdate";
 import "@/lib/models/Artist";
 import { connectToDatabase } from "@/lib/db/connect";
 import { slugify } from "@/lib/utils/slugify";
+import { unstable_cache } from "next/cache";
 
 export async function getEvents(params: {
   status?: string;
@@ -114,7 +115,13 @@ export async function getEventStats() {
   }, {});
 }
 
-export async function getDistinctEventCategories() {
+async function loadDistinctEventCategories() {
   await connectToDatabase();
   return Event.distinct("category");
 }
+
+export const getDistinctEventCategories = unstable_cache(
+  loadDistinctEventCategories,
+  ["distinct-event-categories"],
+  { revalidate: 3600, tags: ["events"] }
+);

@@ -1,5 +1,6 @@
 import Artist from "@/lib/models/Artist";
 import { connectToDatabase } from "@/lib/db/connect";
+import { unstable_cache } from "next/cache";
 
 const SORT_MAP: Record<string, Record<string, 1 | -1>> = {
   name_asc: { name: 1 },
@@ -106,10 +107,16 @@ export async function suggestArtists(
   return JSON.parse(JSON.stringify(artists)) as ArtistSuggestion[];
 }
 
-export async function getDistinctCategories() {
+async function loadDistinctCategories() {
   await connectToDatabase();
   return Artist.distinct("category");
 }
+
+export const getDistinctCategories = unstable_cache(
+  loadDistinctCategories,
+  ["distinct-categories"],
+  { revalidate: 3600, tags: ["artists"] }
+);
 
 const CITY_ALIASES: Record<string, string> = {
   // Delhi cluster
@@ -285,7 +292,7 @@ function normalizeCity(city: string): string {
 
 export const MIN_CITY_ARTISTS = 2;
 
-export async function getDistinctCities() {
+async function loadDistinctCities() {
   await connectToDatabase();
   const raw = await Artist.aggregate<{ _id: string; count: number }>([
     {
@@ -310,7 +317,13 @@ export async function getDistinctCities() {
     .sort();
 }
 
-export async function getCategoryCounts() {
+export const getDistinctCities = unstable_cache(
+  loadDistinctCities,
+  ["distinct-cities"],
+  { revalidate: 3600, tags: ["artists"] }
+);
+
+async function loadCategoryCounts() {
   await connectToDatabase();
   const counts = await Artist.aggregate([
     { $group: { _id: "$category", count: { $sum: 1 } } }
@@ -320,6 +333,12 @@ export async function getCategoryCounts() {
     return acc;
   }, {});
 }
+
+export const getCategoryCounts = unstable_cache(
+  loadCategoryCounts,
+  ["category-counts"],
+  { revalidate: 3600, tags: ["artists"] }
+);
 
 export async function getLatestCategoryUpdates() {
   await connectToDatabase();

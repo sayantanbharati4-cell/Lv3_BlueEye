@@ -1,6 +1,7 @@
 import BlogPost from "@/lib/models/BlogPost";
 import { connectToDatabase } from "@/lib/db/connect";
 import { slugify } from "@/lib/utils/slugify";
+import { unstable_cache } from "next/cache";
 
 export async function getBlogPosts(params: {
   page?: number;
@@ -40,11 +41,17 @@ export async function getBlogPostBySlug(slug: string) {
   return JSON.parse(JSON.stringify(post));
 }
 
-export async function getDistinctBlogCategories() {
+async function loadDistinctBlogCategories() {
   await connectToDatabase();
   const categories = await BlogPost.distinct("category", { published: true });
   return categories.filter(Boolean) as string[];
 }
+
+export const getDistinctBlogCategories = unstable_cache(
+  loadDistinctBlogCategories,
+  ["distinct-blog-categories"],
+  { revalidate: 3600, tags: ["blog"] }
+);
 
 export async function getBlogPostsForSitemap(max = 100) {
   await connectToDatabase();

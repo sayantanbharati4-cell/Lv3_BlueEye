@@ -1,6 +1,7 @@
 import { connectToDatabase } from "@/lib/db/connect";
 import Review from "@/lib/models/Review";
 import User from "@/lib/models/User";
+import { unstable_cache } from "next/cache";
 
 export type HomeReview = {
   _id: string;
@@ -16,8 +17,7 @@ export type HomeReview = {
   role?: string;
 };
 
-/** Homepage marquee reviews, populated once on the server. */
-export async function getHomeReviews(): Promise<HomeReview[]> {
+async function loadHomeReviews(): Promise<HomeReview[]> {
   await connectToDatabase();
   const reviews = await Review.find()
     .populate("user", "name username image address")
@@ -25,3 +25,10 @@ export async function getHomeReviews(): Promise<HomeReview[]> {
     .lean();
   return JSON.parse(JSON.stringify(reviews)) as HomeReview[];
 }
+
+/** Homepage marquee reviews, populated once on the server. */
+export const getHomeReviews = unstable_cache(
+  loadHomeReviews,
+  ["home-reviews"],
+  { revalidate: 300, tags: ["reviews"] }
+);
