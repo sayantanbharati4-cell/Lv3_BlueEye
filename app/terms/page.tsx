@@ -200,7 +200,7 @@ export default function TermsPage() {
               <a href={`mailto:${email}`} style={{ color: "var(--gold)", textDecoration: "none", fontWeight: 600 }}>{email}</a>
             </div>
           </div>
-          <Link href="/contact" className="btn-primary" style={{ textDecoration: "none", display: "inline-flex" }}>
+          <Link prefetch={false} href="/contact" className="btn-primary" style={{ textDecoration: "none", display: "inline-flex" }}>
             Contact Us Page →
           </Link>
         </div>

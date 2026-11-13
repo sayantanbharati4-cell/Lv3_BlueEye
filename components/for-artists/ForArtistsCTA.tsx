@@ -21,7 +21,7 @@ export default function ForArtistsCTA() {
           <button onClick={() => setShowForm(true)} className="btn-primary">
             Submit Request
           </button>
-          <Link href="/contact" className="btn-outline">
+          <Link prefetch={false} href="/contact" className="btn-outline">
             Talk to Our Team
           </Link>
         </div>

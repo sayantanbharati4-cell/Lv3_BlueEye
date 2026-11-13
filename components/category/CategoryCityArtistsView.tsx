@@ -108,15 +108,15 @@ export default async function CategoryCityArtistsView({
           marginBottom: "1.5rem",
         }}
       >
-        <Link href="/" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>
+        <Link prefetch={false} href="/" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>
           Home
         </Link>
         <span>/</span>
-        <Link href="/artists" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>
+        <Link prefetch={false} href="/artists" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>
           Artists
         </Link>
         <span>/</span>
-        <Link href={categoryPath(combo.category)} style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>
+        <Link prefetch={false} href={categoryPath(combo.category)} style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>
           {combo.category}
         </Link>
         <span>/</span>
@@ -158,7 +158,7 @@ export default async function CategoryCityArtistsView({
           }}
         >
           {currentPage > 1 && (
-            <Link
+            <Link prefetch={false}
               href={currentPage - 1 === 1 ? canonicalPath : `${canonicalPath}/page/${currentPage - 1}`}
               className="btn-outline"
               rel="prev"
@@ -173,7 +173,7 @@ export default async function CategoryCityArtistsView({
             if (pageNum > totalPages) return null;
             const href = pageNum === 1 ? canonicalPath : `${canonicalPath}/page/${pageNum}`;
             return (
-              <Link
+              <Link prefetch={false}
                 key={pageNum}
                 href={href}
                 className="btn-outline"
@@ -192,7 +192,7 @@ export default async function CategoryCityArtistsView({
             );
           })}
           {currentPage < totalPages && (
-            <Link
+            <Link prefetch={false}
               href={`${canonicalPath}/page/${currentPage + 1}`}
               className="btn-outline"
               rel="next"

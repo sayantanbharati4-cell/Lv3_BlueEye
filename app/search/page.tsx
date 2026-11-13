@@ -63,7 +63,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       {artists.length === 0 ? (
         <div style={{ padding: '4rem 0', textAlign: 'center', color: 'var(--text2)' }}>
           <p>No artists found. Try adjusting your search query or filters.</p>
-          <Link href="/artists" className="btn-outline" style={{ marginTop: '1rem' }}>Browse All Artists</Link>
+          <Link prefetch={false} href="/artists" className="btn-outline" style={{ marginTop: '1rem' }}>Browse All Artists</Link>
         </div>
       ) : (
         <div className="artists-grid">

@@ -14,7 +14,7 @@ export default function Footer() {
       <div className="footer-inner">
         <div className="footer-grid">
           <div className="footer-brand">
-            <Link href="/" className="logo" style={{ marginBottom: '.5rem', display: 'inline-flex' }}>
+            <Link prefetch={false} href="/" className="logo" style={{ marginBottom: '.5rem', display: 'inline-flex' }}>
               <div className="logo-text">{siteConfig.name || "BlueEye"} <span>India's Artist Platform</span></div>
             </Link>
             <p>India's leading platform to discover and book world-class artists for every stage and occasion.</p>
@@ -61,12 +61,12 @@ export default function Footer() {
           <div className="footer-col">
             <h4>Company</h4>
             <ul>
-              <li><Link href="/about">About Us</Link></li>
-              <li><Link href="/#how">How It Works</Link></li>
-<li><Link href="/for-artists">For Artists</Link></li>
-              <li><Link href="/blog">Blog</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
-              <li><Link href="/privacy-policy">Privacy Policy</Link></li>
+              <li><Link prefetch={false} href="/about">About Us</Link></li>
+              <li><Link prefetch={false} href="/#how">How It Works</Link></li>
+<li><Link prefetch={false} href="/for-artists">For Artists</Link></li>
+              <li><Link prefetch={false} href="/blog">Blog</Link></li>
+              <li><Link prefetch={false} href="/contact">Contact</Link></li>
+              <li><Link prefetch={false} href="/privacy-policy">Privacy Policy</Link></li>
             </ul>
           </div>
         </div>
@@ -74,9 +74,9 @@ export default function Footer() {
         <div className="footer-bottom">
           <p>© 2018 {siteConfig.name}. All rights reserved. Made with ♥ in India.</p>
           <div className="footer-bottom-links">
-            <Link href="/terms">Terms</Link>
-            <Link href="/privacy-policy">Privacy</Link>
-            <Link href="/sitemap.xml">Sitemap</Link>
+            <Link prefetch={false} href="/terms">Terms</Link>
+            <Link prefetch={false} href="/privacy-policy">Privacy</Link>
+            <Link prefetch={false} href="/sitemap.xml">Sitemap</Link>
           </div>
         </div>
       </div>

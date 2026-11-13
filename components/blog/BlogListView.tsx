@@ -84,7 +84,7 @@ export default async function BlogListView({
             marginBottom: "3rem",
           }}
         >
-          <Link
+          <Link prefetch={false}
             href="/blog"
             className="btn-outline"
             style={{
@@ -99,7 +99,7 @@ export default async function BlogListView({
             All
           </Link>
           {categories.map((cat) => (
-            <Link
+            <Link prefetch={false}
               key={cat}
               href={blogPagePath(1, cat)}
               className="btn-outline"
@@ -226,7 +226,7 @@ export default async function BlogListView({
           }}
         >
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-            <Link
+            <Link prefetch={false}
               key={p}
               href={blogPagePath(p, category)}
               className="btn-outline"

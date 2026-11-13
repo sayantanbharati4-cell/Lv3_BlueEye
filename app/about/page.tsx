@@ -165,8 +165,8 @@ export default async function AboutPage() {
         <h2>Ready to Make Your Event <em className="cta-accent">Unforgettable?</em></h2>
         <p>Connect with our booking experts today and bring the best artists in India to your stage.</p>
         <div className="cta-actions">
-          <Link href="/book-artist" className="btn-primary">Book an Artist</Link>
-          <Link href="/contact" className="btn-outline">Contact Support</Link>
+          <Link prefetch={false} href="/book-artist" className="btn-primary">Book an Artist</Link>
+          <Link prefetch={false} href="/contact" className="btn-outline">Contact Support</Link>
         </div>
       </div>
 

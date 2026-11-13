@@ -115,9 +115,9 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
               alignItems: "center",
             }}
           >
-            <Link href="/" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>Home</Link>
+            <Link prefetch={false} href="/" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>Home</Link>
             <span>/</span>
-            <Link href="/artists" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>
+            <Link prefetch={false} href="/artists" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>
               Artists
             </Link>
             <span>/</span>
@@ -243,7 +243,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
           <section className="booking-card" aria-labelledby="artist-booking-heading">
             <h2 id="artist-booking-heading" className="text-2xl font-bold mb-2">Book {artist.name}</h2>
             <p className="text-text2 mb-6 text-sm">Professional booking services for your private events, weddings, and corporate shows on {siteConfig.name}.</p>
-            <Link href={`/book-artist?artist=${artist.slug}`} className="btn-primary w-full py-4 text-lg">
+            <Link prefetch={false} href={`/book-artist?artist=${artist.slug}`} className="btn-primary w-full py-4 text-lg">
               Check Availability & Pricing ✦
             </Link>
           </section>

@@ -31,7 +31,7 @@ export default async function CategoriesPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
 
       <nav aria-label="Breadcrumb" style={{ fontSize: "0.8rem", color: "var(--muted,#9ca3af)", display: "flex", gap: "0.4rem", alignItems: "center", marginBottom: "1.5rem" }}>
-        <Link href="/" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>Home</Link>
+        <Link prefetch={false} href="/" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>Home</Link>
         <span>/</span>
         <span>Categories</span>
       </nav>

@@ -172,7 +172,7 @@ export default function ContactPage() {
           For pricing quotes, artist availability, and rider coordination — head over to our dedicated Artist Booking Desk.
         </p>
         <div className="cta-actions">
-          <Link href="/book-artist" className="btn-primary">
+          <Link prefetch={false} href="/book-artist" className="btn-primary">
             Proceed to Booking Desk ✦
           </Link>
         </div>

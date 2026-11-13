@@ -84,9 +84,9 @@ export default async function BlogPostPage({
       />
 
       <nav aria-label="Breadcrumb" className="blog-breadcrumb">
-        <Link href="/">Home</Link>
+        <Link prefetch={false} href="/">Home</Link>
         <span>/</span>
-        <Link href="/blog">Blog</Link>
+        <Link prefetch={false} href="/blog">Blog</Link>
         <span>/</span>
         <span className="current">{post.title}</span>
       </nav>
@@ -129,13 +129,13 @@ export default async function BlogPostPage({
 
       <div className="blog-cta">
         <p>Ready to book amazing talent for your event?</p>
-        <Link href="/book-artist" className="btn-primary">
+        <Link prefetch={false} href="/book-artist" className="btn-primary">
           Book an Artist Now ✦
         </Link>
       </div>
 
       <div className="blog-footer">
-        <Link href="/blog" className="btn-outline">
+        <Link prefetch={false} href="/blog" className="btn-outline">
           ← Back to Blog
         </Link>
       </div>

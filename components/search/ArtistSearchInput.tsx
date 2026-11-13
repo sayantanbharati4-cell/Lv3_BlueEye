@@ -204,7 +204,7 @@ export default function ArtistSearchInput({
             const isActive = index === activeIndex;
             return (
               <li key={artist._id} role="option" id={`${listId}-opt-${index}`} aria-selected={isActive}>
-                <Link
+                <Link prefetch={false}
                   href={`/artists/${artist.slug}`}
                   className={`artist-search-suggestion${isActive ? " is-active" : ""}`}
                   onMouseEnter={() => setActiveIndex(index)}

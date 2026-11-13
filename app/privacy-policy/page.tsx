@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
               <div style={{ color: "var(--text2)", lineHeight: 1.5 }}>{address}</div>
             </div>
           </div>
-          <Link href="/contact" className="btn-primary" style={{ textDecoration: "none", display: "inline-flex" }}>
+          <Link prefetch={false} href="/contact" className="btn-primary" style={{ textDecoration: "none", display: "inline-flex" }}>
             Contact Us Page →
           </Link>
         </div>

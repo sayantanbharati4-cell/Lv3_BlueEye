@@ -80,9 +80,9 @@ export default async function EventDetailPage({
         {/* Top Header / Breadcrumbs & Admin shortcut */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
           <nav aria-label="Breadcrumb" style={{ fontSize: "0.8rem", color: "var(--muted,#9ca3af)", display: "flex", gap: "0.4rem", alignItems: "center" }}>
-            <Link href="/" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>Home</Link>
+            <Link prefetch={false} href="/" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>Home</Link>
             <span>/</span>
-            <Link href="/events" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>Events</Link>
+            <Link prefetch={false} href="/events" style={{ color: "var(--gold,#d4a017)", textDecoration: "none" }}>Events</Link>
             <span>/</span>
             <span>{event.title}</span>
           </nav>
@@ -116,7 +116,7 @@ export default async function EventDetailPage({
                 </h2>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "1rem" }}>
                   {event.artists.map((a: any) => (
-                    <Link key={a._id} href={`/artists/${a.slug}`} style={{
+                    <Link prefetch={false} key={a._id} href={`/artists/${a.slug}`} style={{
                       display: "flex", flexDirection: "column", gap: "0.75rem", textDecoration: "none",
                       padding: "1rem", borderRadius: "1rem", background: "rgba(255,255,255,0.02)",
                       border: "1px solid rgba(255,255,255,0.06)", transition: "all 0.2s",

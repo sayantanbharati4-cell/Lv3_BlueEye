@@ -8,7 +8,7 @@ export default function NotFound() {
       <p className="text-text3 mb-8 max-w-md">
         The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
       </p>
-      <Link href="/" className="btn-primary">
+      <Link prefetch={false} href="/" className="btn-primary">
         Return Home
       </Link>
     </div>

@@ -47,7 +47,7 @@ export default async function EventsListView({ status }: { status?: string }) {
           const active = (tab === "All" && !status) || tab === status;
           const href = tab === "All" ? "/events" : eventStatusPath(tab);
           return (
-            <Link key={tab} href={href} style={{
+            <Link prefetch={false} key={tab} href={href} style={{
               padding: "6px 16px", borderRadius: "999px", fontSize: "0.82rem", fontWeight: 600,
               textDecoration: "none", transition: "all 0.15s",
               background: active ? "var(--gold,#d4a017)" : "rgba(255,255,255,0.05)",

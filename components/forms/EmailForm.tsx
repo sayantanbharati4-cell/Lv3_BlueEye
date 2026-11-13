@@ -145,7 +145,7 @@ export default function EmailForm({ variant, title, description, endpoint }: Pro
         >
           Sign in to send a message. We use your account details so we can get back to you.
         </p>
-        <Link
+        <Link prefetch={false}
           href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}
           className="btn-primary"
           style={{ textDecoration: "none", display: "inline-block" }}
