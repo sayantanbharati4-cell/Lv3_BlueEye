@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 
 interface UserProfile {
   name?: string;
@@ -77,26 +77,10 @@ const MOCK_REVIEWS: ReviewItem[] = [
   },
 ];
 
-export default function TestimonialsMarquee() {
-  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+export default function TestimonialsMarquee({ initialReviews = [] }: { initialReviews?: ReviewItem[] }) {
+  const [reviews] = useState<ReviewItem[]>(() => [...initialReviews, ...MOCK_REVIEWS]);
   const [isPaused, setIsPaused] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    fetch("/api/reviews")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.data)) {
-          // Merge dynamic database reviews with our premium fallback mock testimonials
-          setReviews([...data.data, ...MOCK_REVIEWS]);
-        } else {
-          setReviews(MOCK_REVIEWS);
-        }
-      })
-      .catch(() => {
-        setReviews(MOCK_REVIEWS);
-      });
-  }, []);
 
   if (reviews.length === 0) {
     return (

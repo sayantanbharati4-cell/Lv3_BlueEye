@@ -10,6 +10,8 @@ import Event from "@/lib/models/Event";
 import { categoryPath, cityPath } from "@/lib/seo/slugs";
 import { getDistinctCategories, getDistinctCities } from "@/lib/services/searchService";
 import { getHomePageData } from "@/lib/services/homeDataService";
+import { getEvents } from "@/lib/services/eventService";
+import { getHomeReviews } from "@/lib/services/reviewService";
 
 const PlasmaWave = dynamic(() => import("@/components/react-bits/PlasmaWave"));
 
@@ -111,12 +113,14 @@ const faqSchema = {
 export default async function HomePage() {
   await connectToDatabase();
   
-  const [totalArtists, totalEvents, topCategories, topCities, homeData] = await Promise.all([
+  const [totalArtists, totalEvents, topCategories, topCities, homeData, eventsData, reviews] = await Promise.all([
     Artist.countDocuments().catch(() => 0),
     Event.countDocuments().catch(() => 0),
     getDistinctCategories().catch(() => [] as string[]),
     getDistinctCities().catch(() => [] as string[]),
     getHomePageData().catch(() => null),
+    getEvents({ limit: 3 }).catch(() => ({ events: [] })),
+    getHomeReviews().catch(() => []),
   ]);
 
   const artistsText = totalArtists > 0 ? `${totalArtists}+` : "20,000+";
@@ -133,7 +137,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       {/* Homepage dynamic sections with server-provided initial data */}
-      <HomeDynamicContent initialData={homeData} />
+      <HomeDynamicContent initialData={homeData} events={eventsData.events} />
 
       {/* Infinite Scrolling Premium Gold Marquee Row */}
       <div className="marquee-wrap">
@@ -204,7 +208,7 @@ export default async function HomePage() {
           </div>
 
           <div style={{ overflow: 'hidden', width: '100%', position: 'relative' }}>
-            <TestimonialsMarquee />
+            <TestimonialsMarquee initialReviews={reviews} />
           </div>
         </div>
       </section>

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import HomeBackground from "./HomeBackground";
-import HeroSection from "./HeroSection";
+import HeroSection, { type Event } from "./HeroSection";
 import CategoryGrid from "./CategoryGrid";
 import FeaturedArtists from "./FeaturedArtists";
 import HomeLoadProgress, { type HomeSectionKey } from "./HomeLoadProgress";
@@ -26,7 +26,7 @@ function progressFromReady(ready: Record<HomeSectionKey, boolean>) {
   return Math.round((done / keys.length) * 100);
 }
 
-export default function HomeDynamicContent({ initialData: _initialData }: { initialData?: HomePageData | null }) {
+export default function HomeDynamicContent({ initialData: _initialData, events = [] }: { initialData?: HomePageData | null; events?: Event[] }) {
   const initialData = _initialData ?? null;
   const hasServerData = !!initialData;
   const [data, setData] = useState<Partial<HomePageData>>(initialData ?? {});
@@ -161,7 +161,7 @@ export default function HomeDynamicContent({ initialData: _initialData }: { init
 
       {ready.hero ? (
         <div className="home-section-enter">
-          <HeroSection categories={categories} artists={data.randomArtists ?? []} />
+          <HeroSection categories={categories} artists={data.randomArtists ?? []} events={events} />
         </div>
       ) : (
         <HeroSkeleton />

@@ -17,7 +17,7 @@ interface Artist {
   performance?: { genres?: string[] };
 }
 
-interface Event {
+export interface Event {
   _id: string;
   title: string;
   category: string;
@@ -25,7 +25,7 @@ interface Event {
   status: string;
 }
 
-export default function HeroSection({ categories, artists: initialArtists }: { categories: string[], artists?: Artist[] }) {
+export default function HeroSection({ categories, artists: initialArtists, events = [] }: { categories: string[], artists?: Artist[], events?: Event[] }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchCategory, setSearchCategory] = useState("");
@@ -37,7 +37,6 @@ export default function HeroSection({ categories, artists: initialArtists }: { c
 
   // states for dynamic widgets
   const [artists, setArtists] = useState<Artist[]>(initialArtists && initialArtists.length > 0 ? initialArtists : fallbackArtists);
-  const [events, setEvents] = useState<Event[]>([]);
   const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
 
   const categoriesGrid = [
@@ -66,45 +65,6 @@ export default function HeroSection({ categories, artists: initialArtists }: { c
       )
     }
   ];
-
-  // fetch events on mount
-  useEffect(() => {
-    async function fetchData() {
-      const cacheKey = "hero_events_cache";
-      const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
-      
-      if (typeof window !== "undefined") {
-        const cachedStr = localStorage.getItem(cacheKey);
-        if (cachedStr) {
-          try {
-            const parsed = JSON.parse(cachedStr);
-            if (parsed.timestamp && Date.now() - parsed.timestamp < CACHE_EXPIRY_MS) {
-              setEvents(parsed.data);
-              return;
-            }
-          } catch {
-            localStorage.removeItem(cacheKey);
-          }
-        }
-      }
-
-      try {
-        const eventsRes = await fetch("/api/events?limit=3").then(r => r.json());
-        if (eventsRes && !eventsRes.error && eventsRes.events?.length > 0) {
-          setEvents(eventsRes.events);
-          if (typeof window !== "undefined") {
-            localStorage.setItem(cacheKey, JSON.stringify({ data: eventsRes.events, timestamp: Date.now() }));
-          }
-        } else {
-          setEvents(fallbackEvents);
-        }
-      } catch (err) {
-        console.error("Failed to load hero events data:", err);
-        setEvents(fallbackEvents);
-      }
-    }
-    fetchData();
-  }, []);
 
   // auto rotate artist carousel (random fetch/rotation every 3.5 seconds)
   useEffect(() => {
