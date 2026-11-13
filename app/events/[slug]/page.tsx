@@ -18,7 +18,7 @@ import AdminEditEventButton from "@/components/ui/AdminEditEventButton";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { eventJsonLd } from "@/lib/seo/jsonld";
 
-export const revalidate = 3600;
+export const revalidate = 21600;
 
 export async function generateStaticParams() {
   const events = await getEventsForSitemap();

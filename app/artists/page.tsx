@@ -3,7 +3,7 @@ import ArtistsBrowseView from "@/components/artists/ArtistsBrowseView";
 import { siteConfig } from "@/lib/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 
-export const revalidate = 3600;
+export const revalidate = 21600;
 
 export const metadata: Metadata = pageMetadata({
   title: "Browse Artists – Singers, DJs, Comedians & More",

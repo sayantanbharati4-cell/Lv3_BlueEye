@@ -6,7 +6,7 @@ import { pageMetadata } from "@/lib/seo/metadata";
 import { comboMetaDescription, pluralizeCategory } from "@/lib/seo/content";
 import { slugify } from "@/lib/utils/slugify";
 
-export const revalidate = 3600;
+export const revalidate = 21600;
 
 type Combo = { category: string; city: string; count: number };
 

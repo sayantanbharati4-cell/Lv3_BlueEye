@@ -7,7 +7,7 @@ import { cityPath, resolveCitySlug } from "@/lib/seo/slugs";
 import { slugify } from "@/lib/utils/slugify";
 import { notFound } from "next/navigation";
 
-export const revalidate = 3600;
+export const revalidate = 21600;
 
 export async function generateStaticParams() {
   const cities = await getDistinctCities();

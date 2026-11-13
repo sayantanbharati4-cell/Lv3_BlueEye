@@ -5,6 +5,7 @@ import BlogPost from "@/lib/models/BlogPost";
 import { connectToDatabase } from "@/lib/db/connect";
 import { slugify } from "@/lib/utils/slugify";
 import { apiSuccess, apiError } from "@/lib/utils/apiResponse";
+import { revalidateBlog } from "@/lib/cache/revalidate";
 
 export async function GET(
   _req: NextRequest,
@@ -59,6 +60,7 @@ export async function PUT(
     const post = await BlogPost.findByIdAndUpdate(id, { $set: update }, { new: true }).lean();
     if (!post) return apiError("Post not found", 404);
 
+    revalidateBlog(post.slug);
     return apiSuccess(JSON.parse(JSON.stringify(post)), "Post updated");
   } catch (error: any) {
     return apiError(error.message || "Failed to update post", 500);
@@ -78,6 +80,7 @@ export async function DELETE(
     const post = await BlogPost.findByIdAndDelete(id).lean();
     if (!post) return apiError("Post not found", 404);
 
+    revalidateBlog(post.slug);
     return apiSuccess(null, "Post deleted");
   } catch (error: any) {
     return apiError(error.message || "Failed to delete post", 500);

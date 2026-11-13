@@ -3,6 +3,8 @@ import { siteConfig } from "@/lib/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 import ForArtistsCTA from "@/components/for-artists/ForArtistsCTA";
 
+export const revalidate = false;
+
 export const metadata = pageMetadata({
   title: "For Artists — Join India's Premium Booking Platform",
   description: `List your profile on ${siteConfig.name} and get discovered by event organisers across India. Zero listing fees, direct bookings, and dedicated support.`,

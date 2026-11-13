@@ -8,6 +8,7 @@ import { apiSuccess, apiError } from "@/lib/utils/apiResponse";
 import { getCache, setCache, invalidateCache } from "@/lib/db/redis";
 import { cacheConfig, userReviewCacheKey } from "@/lib/config/cache";
 import mongoose from "mongoose";
+import { revalidateReviews } from "@/lib/cache/revalidate";
 
 export async function GET() {
   try {
@@ -16,7 +17,7 @@ export async function GET() {
     // Try cache first
     const cachedReviews = await getCache<any[]>(cacheKey);
     if (cachedReviews) {
-      return apiSuccess(cachedReviews);
+      return apiSuccess(cachedReviews, "Success", 200, cacheConfig.reviews.allMarqueeTtlSeconds);
     }
 
     await connectToDatabase();
@@ -29,7 +30,7 @@ export async function GET() {
     // Cache for 5 minutes (300 seconds)
     await setCache(cacheKey, reviews, cacheConfig.reviews.allMarqueeTtlSeconds);
 
-    return apiSuccess(reviews);
+    return apiSuccess(reviews, "Success", 200, cacheConfig.reviews.allMarqueeTtlSeconds);
   } catch (error: any) {
     return apiError(error.message || "Failed to fetch reviews", 500);
   }
@@ -89,6 +90,7 @@ export async function POST(request: Request) {
     // Invalidate caches
     await invalidateCache(cacheConfig.reviews.allMarqueeKey);
     await invalidateCache(userReviewCacheKey(userId));
+    revalidateReviews();
 
     return apiSuccess(review, review.isEdited ? "Review edited successfully" : "Review submitted successfully");
   } catch (error: any) {
@@ -126,6 +128,7 @@ export async function DELETE() {
     // Invalidate caches
     await invalidateCache(cacheConfig.reviews.allMarqueeKey);
     await invalidateCache(userReviewCacheKey(userId));
+    revalidateReviews();
 
     return apiSuccess(null, "Review deleted successfully");
   } catch (error: any) {

@@ -5,6 +5,8 @@ import { siteConfig } from "@/lib/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 import EmailForm from "@/components/forms/EmailForm";
 
+export const revalidate = false;
+
 export const metadata: Metadata = pageMetadata({
   title: "Terms of Service — Booking & Platform Usage",
   description: `Review the terms and conditions for using ${siteConfig.name}. Covers artist bookings, user obligations, payments, cancellations, and platform usage.`,

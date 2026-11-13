@@ -5,6 +5,7 @@ import BlogPost from "@/lib/models/BlogPost";
 import { connectToDatabase } from "@/lib/db/connect";
 import { slugify } from "@/lib/utils/slugify";
 import { apiSuccess, apiError } from "@/lib/utils/apiResponse";
+import { revalidateBlog } from "@/lib/cache/revalidate";
 
 export async function GET(req: NextRequest) {
   try {
@@ -66,6 +67,7 @@ export async function POST(request: Request) {
       featured: body.featured || false,
     });
 
+    revalidateBlog(post.slug);
     return apiSuccess(JSON.parse(JSON.stringify(post)), "Blog post created", 201);
   } catch (error: any) {
     return apiError(error.message || "Failed to create post", 500);

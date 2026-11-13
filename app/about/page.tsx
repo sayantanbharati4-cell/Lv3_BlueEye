@@ -4,6 +4,8 @@ import { pageMetadata } from "@/lib/seo/metadata";
 import { localBusinessJsonLd } from "@/lib/seo/jsonld";
 import { getRealStats, formatCount } from "@/lib/services/statsService";
 
+export const revalidate = 86400;
+
 export const metadata = pageMetadata({
   title: `About Us`,
   description: siteConfig.longDescription,

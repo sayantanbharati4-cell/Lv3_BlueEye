@@ -4,6 +4,8 @@ import Link from "next/link";
 import EmailForm from "@/components/forms/EmailForm";
 import { pageMetadata } from "@/lib/seo/metadata";
 
+export const revalidate = false;
+
 export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy",
   description:

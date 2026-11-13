@@ -4,7 +4,7 @@ import { getGlobalEventsLock } from "@/lib/services/eventLockService";
 import { siteConfig } from "@/lib/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 
-export const revalidate = 3600;
+export const revalidate = 21600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const lock = await getGlobalEventsLock();

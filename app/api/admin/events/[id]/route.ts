@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth/authOptions";
 import { updateEvent, deleteEvent, getEventBySlug } from "@/lib/services/eventService";
 import Event from "@/lib/models/Event";
 import { connectToDatabase } from "@/lib/db/connect";
+import { revalidateEvent } from "@/lib/cache/revalidate";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +39,7 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
     const event = await updateEvent(id, body);
+    revalidateEvent(event.slug);
     return NextResponse.json({ success: true, event });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 400 });
@@ -51,7 +53,8 @@ export async function DELETE(
   if (!await requireAdmin()) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const { id } = await params;
-    await deleteEvent(id);
+    const event = await deleteEvent(id);
+    if (event?.slug) revalidateEvent(event.slug);
     return NextResponse.json({ success: true });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });

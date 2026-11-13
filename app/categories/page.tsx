@@ -7,6 +7,8 @@ import { categoryPath } from "@/lib/seo/slugs";
 import Link from "next/link";
 import { breadcrumbJsonLd } from "@/lib/seo/jsonld";
 
+export const revalidate = 86400;
+
 export const metadata: Metadata = pageMetadata({
   title: "Browse All Artist Categories — Book by Genre & Performance Type",
   description: `Explore all artist categories on ${siteConfig.name}: singers, DJs, comedians, bands, dancers, anchors, and more for weddings, corporate events, and parties across India.`,

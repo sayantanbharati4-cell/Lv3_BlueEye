@@ -5,7 +5,7 @@ import { siteConfig } from "@/lib/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { blogPagePath } from "@/lib/seo/slugs";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 function parsePage(raw: string): number | null {
   if (!/^\d+$/.test(raw)) return null;

@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth/authOptions";
 import { addEventUpdate } from "@/lib/services/eventService";
 import EventUpdate from "@/lib/models/EventUpdate";
 import { connectToDatabase } from "@/lib/db/connect";
+import Event from "@/lib/models/Event";
+import { revalidateEvent } from "@/lib/cache/revalidate";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +46,8 @@ export async function POST(
       attachments: body.attachments || [],
       postedBy: (session.user as any)?.name || "Admin",
     });
+    const event = await Event.findById(id).select("slug").lean();
+    if (event?.slug) revalidateEvent(event.slug);
     return NextResponse.json({ success: true, update }, { status: 201 });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 400 });

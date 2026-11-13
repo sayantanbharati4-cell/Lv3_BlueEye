@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/seo/metadata";
 import { eventStatusPath } from "@/lib/seo/slugs";
 import { slugify } from "@/lib/utils/slugify";
 
-export const revalidate = 3600;
+export const revalidate = 21600;
 
 const EVENT_STATUSES = ["Upcoming", "Ongoing", "Completed", "Cancelled"];
 

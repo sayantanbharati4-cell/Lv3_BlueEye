@@ -5,6 +5,7 @@ import { createArtist } from "@/lib/services/artistService";
 import { importArtistsFromJSON } from "@/lib/services/importService";
 import { artistSchemaValidation } from "@/lib/utils/validators";
 import { apiSuccess, apiError } from "@/lib/utils/apiResponse";
+import { revalidateArtist } from "@/lib/cache/revalidate";
 
 export async function POST(request: Request) {
   try {
@@ -16,6 +17,7 @@ export async function POST(request: Request) {
     // Check if bulk import (array)
     if (Array.isArray(body)) {
       const summary = await importArtistsFromJSON(body);
+      revalidateArtist();
       return apiSuccess(summary, "Bulk import completed", 201);
     }
 
@@ -26,6 +28,7 @@ export async function POST(request: Request) {
     }
     
     const artist = await createArtist(result.data);
+    revalidateArtist(artist.slug);
     return apiSuccess(artist, "Artist created successfully", 201);
   } catch (error: any) {
     return apiError(error.message || "Failed to create artist", 500);

@@ -6,7 +6,7 @@ import { cityMetaDescription } from "@/lib/seo/content";
 import { cityPagePath, cityPath, resolveCitySlug } from "@/lib/seo/slugs";
 import { notFound, redirect } from "next/navigation";
 
-export const revalidate = 3600;
+export const revalidate = 21600;
 
 function parsePage(raw: string): number | null {
   if (!/^\d+$/.test(raw)) return null;

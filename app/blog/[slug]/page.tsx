@@ -7,7 +7,7 @@ import { siteConfig } from "@/lib/config/site";
 import { pageMetadata, siteUrl } from "@/lib/seo/metadata";
 import { breadcrumbJsonLd, articleJsonLd } from "@/lib/seo/jsonld";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   const posts = await getBlogPostsForSitemap();

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/authOptions";
 import { getEvents, createEvent, getEventStats } from "@/lib/services/eventService";
 import { importEventsFromJSON } from "@/lib/services/importService";
+import { revalidateEvent } from "@/lib/cache/revalidate";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +36,7 @@ export async function POST(req: NextRequest) {
 
     if (Array.isArray(body)) {
       const summary = await importEventsFromJSON(body);
+      revalidateEvent();
       return NextResponse.json({ success: true, data: summary, message: "Bulk import completed" }, { status: 201 });
     }
 
@@ -42,6 +44,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "title, category, and startDate are required" }, { status: 400 });
     }
     const event = await createEvent(body);
+    revalidateEvent(event.slug);
     return NextResponse.json({ success: true, event }, { status: 201 });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 400 });

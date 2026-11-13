@@ -15,7 +15,7 @@ import { artistJsonLd, breadcrumbJsonLd, personJsonLd } from "@/lib/seo/jsonld";
 import { siteConfig } from "@/lib/config/site";
 import AdminEditArtistButton from "@/components/ui/AdminEditArtistButton";
 
-export const revalidate = 3600;
+export const revalidate = 604800;
 
 /**
  * Keep build-time pre-rendering bounded independently of the sitemap. The full

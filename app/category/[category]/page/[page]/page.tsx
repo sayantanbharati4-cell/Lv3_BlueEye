@@ -6,7 +6,7 @@ import { categoryMetaDescription } from "@/lib/seo/content";
 import { categoryPagePath, categoryPath, resolveCategorySlug } from "@/lib/seo/slugs";
 import { notFound, redirect } from "next/navigation";
 
-export const revalidate = 3600;
+export const revalidate = 21600;
 
 function parsePage(raw: string): number | null {
   if (!/^\d+$/.test(raw)) return null;

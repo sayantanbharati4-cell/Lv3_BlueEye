@@ -3,6 +3,8 @@ import { siteConfig } from "@/lib/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { localBusinessJsonLd } from "@/lib/seo/jsonld";
 
+export const revalidate = false;
+
 export const metadata = pageMetadata({
   title: "Contact Us",
   description: `Get in touch with the team at ${siteConfig.name}. We are here to help you with artist booking and event entertainment requirements.`,
